@@ -646,8 +646,6 @@ AUR_Rappel = {
 		if (((getPosASL _player select 2)+1)<(_playerPreRappelPosition select 2)) then {
 			_ropesRequired = ceil ((ropeLength _topRope-1)/10);
 			for "_i" from 1 to _ropesRequired do {_player removeItem "AUR_Rappel_Rope"};
-			_ropeItem = "Land_Rope_01_F" createVehicle _playerPreRappelPosition;
-			_ropeItem setPosASL _playerPreRappelPosition;
 			_ropePile = "groundWeaponHolder" createVehicle _playerPreRappelPosition;
 			_ropePile setPosASL _playerPreRappelPosition;
 			_ropePile addItemCargoGlobal ["AUR_Rappel_Rope",_ropesRequired]; 
