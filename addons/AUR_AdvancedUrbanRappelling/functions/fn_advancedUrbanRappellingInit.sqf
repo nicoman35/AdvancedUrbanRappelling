@@ -226,7 +226,7 @@ AUR_Rappel_Action = {
 		if(count _rappelPoint > 0) then {
 			_player setVariable ["AUR_Rappelling_Last_Started_Time",diag_tickTime];
 			_player setVariable ["AUR_Rappelling_Last_Rappel_Point",_rappelPoint];
-			_ropeLength = (([_player] call AUR_Get_Player_Height_Above_Ground) * 1.3) min (({_x == "AUR_Rappel_Rope"} count items player)*10+3);
+			_ropeLength = (([_player] call AUR_Get_Player_Height_Above_Ground)*1.3+3) min (({_x == "AUR_Rappel_Rope"} count items player)*10+3);
 			[_player, _rappelPoint select 0, _rappelPoint select 1,_ropeLength] call AUR_Rappel;
 		} else {
 			[["Couldn't attach rope. Move closer to edge!", false],"AUR_Hint",_player] call AUR_RemoteExec;
@@ -374,7 +374,7 @@ AUR_Rappel = {
 	_player setVariable ["AUR_Is_Rappelling",true,true];
 
 	_playerPreRappelPosition = getPosASL _player;
-	_ropesRequired=0;
+
 	
 	// Start player rappelling 2m out from the rappel point
 	_playerStartPosition = _rappelPoint vectorAdd (_rappelDirection vectorMultiply 2);
@@ -426,11 +426,11 @@ AUR_Rappel = {
 				_ropeLength = player getVariable ["AUR_Rappel_Rope_Length",100];
 				_topRope = player getVariable ["AUR_Rappel_Rope_Top",nil];
 				if(!isNil "_topRope") then {
-					if (({_x == "AUR_Rappel_Rope"} count items player) > ((ropeLength _topRope)/10))  then {
+					if ((ropeLength _topRope)+2<_ropeLength)  then {
 							ropeUnwind [ _topRope, 2, ((ropeLength _topRope) + 0.1) min _ropeLength];
 							_bottomRope = player getVariable ["AUR_Rappel_Rope_Bottom",nil];
 							if(!isNil "_bottomRope") then {
-												ropeUnwind [ _bottomRope, 3, ((ropeLength _bottomRope) - 0.1) max 0];
+												ropeUnwind [ _bottomRope, 2, ((ropeLength _bottomRope) - 0.1) max 0];
 						};
 					};
 				};
@@ -597,7 +597,7 @@ AUR_Rappel = {
 		_lastPosition = _newPosition;
 		_topRope = _player getVariable ["AUR_Rappel_Rope_Top",nil];
 		if(!isNil "_topRope") then {
-			if (({_x == "AUR_Rappel_Rope"} count items player) < (((ropeLength _topRope)-2)/10)) then {
+			if (({_x == "AUR_Rappel_Rope"} count items player) < (((ropeLength _topRope)-5)/10)) then {
 			_player setVariable ["AUR_Detach_Rope",true];
 			};
 		};
@@ -646,15 +646,40 @@ AUR_Rappel = {
 		if (((getPosASL _player select 2)+1)<(_playerPreRappelPosition select 2)) then {
 			_ropesRequired = ceil ((ropeLength _topRope-1)/10);
 			for "_i" from 1 to _ropesRequired do {_player removeItem "AUR_Rappel_Rope"};
-			_ropePile = "groundWeaponHolder" createVehicle _playerPreRappelPosition;
-			_ropePile setPosASL _playerPreRappelPosition;
-			_ropePile addItemCargoGlobal ["AUR_Rappel_Rope",_ropesRequired];		
+			_ropeItem = "Land_Rope_01_F" createVehicle _playerPreRappelPosition;
+			_ropeItem setPosASL _playerPreRappelPosition;
+			_ropeItem attachTo [_anchor];
+			_ropeItem SetVariable ["AUR_Rope_Count",_ropesRequired,true];
+			_ropeItem SetVariable ["AUR_Rope_Object",_rope1,true];
+			_ropeItem SetVariable ["AUR_Rope_Anchor",_anchor,true];
+
+			[_ropeItem,
+				"Detach Rappel Rope",
+				"\a3\ui_f\data\IGUI\Cfg\holdactions\holdAction_connect_ca.paa",
+				"\a3\ui_f\data\IGUI\Cfg\holdactions\holdAction_connect_ca.paa",
+				"true",
+				"true",
+				{},
+				{},
+				{_veh = (_this select 0); _ropePile = "groundWeaponHolder" createVehicle (getPosAsl _veh); _ropePile setPosASL (getPosASL _veh); _ropePile addItemCargoGlobal ["AUR_Rappel_Rope",_veh getVariable ["AUR_Rope_Count",1]]; deleteVehicle (_veh getVariable ["AUR_Rope_Object",nil]);deleteVehicle (_veh getVariable ["AUR_Rope_Anchor",nil]);deleteVehicle _veh; remoteExec ["",_veh];},
+				{},
+				[],
+				2,
+				0,
+				true,
+				false
+			] remoteExec ["BIS_fnc_holdActionAdd",0,_ropeItem];
+			_rappelDevice ropeDetach _rope1;
+		} else {
+			ropeDestroy _rope1;
+			deleteVehicle _anchor;
 		};
+	} else {
+
 	};
-	ropeDestroy _rope1;
 	ropeDestroy _rope2;		
-	deleteVehicle _anchor;
 	deleteVehicle _rappelDevice;
+
 	
 	_player setVariable ["AUR_Is_Rappelling",nil,true];
 	_player setVariable ["AUR_Rappel_Rope_Top",nil];
