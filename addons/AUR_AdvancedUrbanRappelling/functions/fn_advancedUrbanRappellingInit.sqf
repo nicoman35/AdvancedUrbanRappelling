@@ -447,8 +447,6 @@ AUR_Rappel = {
 							ropeUnwind [ _bottomRope, 1, ((ropeLength _bottomRope) + 0.1) max 0];
 						};
 					};
-
-				};
 			};
 			if(_this select 1 in (actionKeys "Turbo") && player getVariable ["AUR_JUMP_PRESSED_START",0] == 0) then {
 				player setVariable ["AUR_JUMP_PRESSED_START",diag_tickTime];
