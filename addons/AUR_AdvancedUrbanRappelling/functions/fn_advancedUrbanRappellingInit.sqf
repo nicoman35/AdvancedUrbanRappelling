@@ -601,7 +601,7 @@ AUR_Rappel = {
 			_player setVariable ["AUR_Detach_Rope",true];
 			};
 		};
-		if((getPos _player) select 2 < 1 || !alive _player || vehicle _player != _player || ropeLength _rope2 <= 1 || _player getVariable ["AUR_Climb_To_Top",false] || _player getVariable ["AUR_Detach_Rope",false] ) exitWith {};
+		if(!alive _player || vehicle _player != _player || ropeLength _rope2 <= 1 || _player getVariable ["AUR_Climb_To_Top",false] || _player getVariable ["AUR_Detach_Rope",false] ) exitWith {};
 		
 		sleep 0.01;
 	};
@@ -644,7 +644,7 @@ AUR_Rappel = {
 	_topRope = _player getVariable ["AUR_Rappel_Rope_Top",nil];
 	if(!isNil "_topRope") then {
 		if (((getPosASL _player select 2)+1)<(_playerPreRappelPosition select 2)) then {
-			_ropesRequired = ceil ((ropeLength _topRope-1)/10);
+			_ropesRequired = ceil ((ropeLength _topRope-3)/10);
 			for "_i" from 1 to _ropesRequired do {_player removeItem "AUR_Rappel_Rope"};
 			_ropePile = "groundWeaponHolder" createVehicle _playerPreRappelPosition;
 			_ropePile setPosASL _playerPreRappelPosition;
