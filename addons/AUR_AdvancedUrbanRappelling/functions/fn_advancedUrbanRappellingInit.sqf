@@ -834,7 +834,7 @@ AUR_Add_Player_Actions = {
 	"[player] call AUR_Rappel_Action_Check",
 	{},
 	{},
-	{[player, vehicle player] call AUR_Rappel_Action;},
+	{[player, vehicle player] spawn AUR_Rappel_Action;},
 	{},
 	nil,
 	5,

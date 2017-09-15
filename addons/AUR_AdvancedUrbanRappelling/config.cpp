@@ -66,31 +66,25 @@ class CfgSounds
 	};
 };
 class CfgWeapons {
-	class ItemCore;
-	class InventoryItem_Base_F;
-	class AUR_Rappel_Gear: ItemCore {
+	class CBA_MiscItem;
+	class CBA_MiscItem_ItemInfo;
+	class AUR_Rappel_Gear: CBA_MiscItem {
 		scope = 2;
-		type=4096;
-		detectRange = -1;
-		simulation = "ItemMineDetector";
 		displayName = "Rappelling Gear";
 		author = "vurtual";
 		model = "A3\Weapons_F\Items\ToolKit";
 		descriptionShort = "Essential rappelling gear, including harness, for urban rappelling.";
-		class ItemInfo: InventoryItem_Base_F {
+		class ItemInfo: CBA_MiscItem_ItemInfo {
 			mass = 8;
 			};
 	};
-	class AUR_Rappel_Rope: ItemCore {
+	class AUR_Rappel_Rope: CBA_MiscItem {
 		scope = 2;
-		type=4096;
-		detectRange = -1;
-		simulation = "ItemMineDetector";
 		displayName = "Rappelling Rope";
 		author = "vurtual";
 		model = "\A3\Structures_F_Heli\Items\Tools\Rope_01_F.p3d";
 		descriptionShort = "10m rope - required to rappel down buildings.";
-		class ItemInfo: InventoryItem_Base_F {
+		class ItemInfo: CBA_MiscItem_ItemInfo {
 			mass = 5;
 			};
 	};
