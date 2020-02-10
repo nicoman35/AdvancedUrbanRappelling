@@ -38,16 +38,16 @@ AUR_Advanced_Urban_Rappelling_Install = {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Play_Rappelling_Sounds = {
-		params ["_player","_rappelDevice","_rappelAncor"];
+		params ["_player", "_rappelDevice", "_rappelAncor"];
 		if (!hasInterface || !(call AUR_Has_Addon_Sounds_Installed) ) exitWith {};
 		if (player distance _player < 15) then {
 			[_player, "AUR_Rappel_Start"] call AUR_Play_3D_Sound;
 			[_rappelDevice, "AUR_Rappel_Loop"] call AUR_Play_3D_Sound;
 		};
 		_this spawn {
-			params ["_player","_rappelDevice","_rappelAncor"];
+			params ["_player", "_rappelDevice", "_rappelAncor"];
 			private _lastDistanceFromAnchor = _rappelDevice distance _rappelAncor;
-			while {_player getVariable ["AUR_Is_Rappelling",false]} do {
+			while {_player getVariable ["AUR_Is_Rappelling", false]} do {
 				private _distanceFromAnchor = _rappelDevice distance _rappelAncor;
 				if(_distanceFromAnchor > _lastDistanceFromAnchor + 0.1 && player distance _player < 15) then {
 					[_player, "AUR_Rappel_Loop"] call AUR_Play_3D_Sound;
@@ -60,7 +60,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		};
 		_this spawn {
 			params ["_player"];
-			while {_player getVariable ["AUR_Is_Rappelling",false]} do {
+			while {_player getVariable ["AUR_Is_Rappelling", false]} do {
 				sleep 0.1;
 			};
 			if (player distance _player < 15) then {
@@ -71,12 +71,12 @@ AUR_Advanced_Urban_Rappelling_Install = {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Play_3D_Sound = {
-		params ["_soundSource","_className"];
-		private _config = getArray ( configFile / "CfgSounds" / _className / "sound" );
+		params ["_soundSource", "_className"];
+		private _config = getArray (configFile / "CfgSounds" / _className / "sound");
 		if (count _config > 0) exitWith {
 			_soundSource say3D _className;
 		};
-		private _configMission = getArray ( missionConfigFile / "CfgSounds" / _className / "sound" );
+		private _configMission = getArray (missionConfigFile / "CfgSounds" / _className / "sound");
 		if (count _configMission > 0) exitWith {
 			_soundSource say3D _className;
 		};
@@ -98,7 +98,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		Number or Array (see above)
 	*/
 	AUR_Find_Nearby_Rappel_Point = {
-		params ["_player",["_searchType","FAST_EXISTS_CHECK"]];
+		params ["_player", ["_searchType", "FAST_EXISTS_CHECK"]];
 		
 		private _playerPosition = getPosASL _player;
 		private _intersectionRadius = 1.5;
@@ -114,11 +114,11 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		// Search for nearby edges
 		for "_i" from 0 to _intersectionTests do
 		{
-			private  _x = cos ((360/_intersectionTests)*_i);
-			private  _y = sin ((360/_intersectionTests)*_i);
+			private  _x = cos ((360 / _intersectionTests) * _i);
+			private  _y = sin ((360 / _intersectionTests) * _i);
 			private _directionUnitVector = vectorNormalized [_x, _y, 0];
-			private _intersectStartASL = _playerPosition vectorAdd ( _directionUnitVector vectorMultiply _intersectionRadius )  vectorAdd [0,0,1.5];
-			private _intersectEndASL = _intersectStartASL vectorAdd [0,0,-5];
+			private _intersectStartASL = _playerPosition vectorAdd (_directionUnitVector vectorMultiply _intersectionRadius) vectorAdd [0, 0, 1.5];
+			private _intersectEndASL = _intersectStartASL vectorAdd [0, 0, -5];
 			private _surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _player, objNull, true, 1];
 			if (_searchType == "FAST_EXISTS_CHECK") then {
 				if (count _surfaces == 0) exitWith {_fastExistsEdgeFound = true};
@@ -150,7 +150,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		if (count _edge == 1) then {
 			private _firstEdge = _edges deleteAt 0;
 			_edges deleteAt (count _edges - 1);
-			_edges pushBack (_edge+_firstEdge);
+			_edges pushBack (_edge + _firstEdge);
 		};
 		
 		private _largestEdgeDistance = 0;
@@ -172,35 +172,34 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			private _edgeDirection = vectorNormalized (( _edgeStart vectorFromTo _edgeEnd ) vectorCrossProduct [0,0,1]);
 			
 			// Check to see if there's a surface we can attach the rope to (so it doesn't hang in the air)
-			
 			_playerPositionASL = getPosASL _player;
 			
 			_intersectStartASL = _playerPositionASL vectorAdd ((_playerPositionASL vectorFromTo _edgeStart) vectorMultiply (_intersectionRadius));
-			_intersectEndASL = _intersectStartASL vectorAdd ((_intersectStartASL vectorFromTo _playerPositionASL) vectorMultiply (_intersectionRadius * 2)) vectorAdd [0,0,-0.5];
+			_intersectEndASL = _intersectStartASL vectorAdd ((_intersectStartASL vectorFromTo _playerPositionASL) vectorMultiply (_intersectionRadius * 2)) vectorAdd [0, 0, -0.5];
 			_surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _player, objNull, true, 1, "FIRE", "NONE"];
 			if (count _surfaces > 0) then {
 				_edgeStart = (_surfaces select 0) select 0;
 			};
 			
 			_intersectStartASL = _playerPositionASL vectorAdd ((_playerPositionASL vectorFromTo _edgeEnd) vectorMultiply (_intersectionRadius));
-			_intersectEndASL = _intersectStartASL vectorAdd ((_intersectStartASL vectorFromTo _playerPositionASL) vectorMultiply (_intersectionRadius * 2)) vectorAdd [0,0,-0.5];
+			_intersectEndASL = _intersectStartASL vectorAdd ((_intersectStartASL vectorFromTo _playerPositionASL) vectorMultiply (_intersectionRadius * 2)) vectorAdd [0, 0, -0.5];
 			_surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _player, objNull, true, 1, "FIRE", "NONE"];
 			if (count _surfaces > 0) then {
 				_edgeEnd = (_surfaces select 0) select 0;
 			};
 			
 			_intersectStartASL = _playerPositionASL vectorAdd ((_playerPositionASL vectorFromTo _edgeMiddle) vectorMultiply (_intersectionRadius));
-			_intersectEndASL = _intersectStartASL vectorAdd ((_intersectStartASL vectorFromTo _playerPositionASL) vectorMultiply (_intersectionRadius * 2)) vectorAdd [0,0,-0.5];
+			_intersectEndASL = _intersectStartASL vectorAdd ((_intersectStartASL vectorFromTo _playerPositionASL) vectorMultiply (_intersectionRadius * 2)) vectorAdd [0, 0, -0.5];
 			_surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _player, objNull, true, 1, "FIRE", "NONE"];
 			if (count _surfaces > 0) then {
 				_edgeMiddle = (_surfaces select 0) select 0;
 			};
 			
 			// Check to make sure there's an opening for rappelling (to stop people from rappelling through a wall)
-			_intersectStartASL = _playerPosition vectorAdd [0,0,1.5];
+			_intersectStartASL = _playerPosition vectorAdd [0, 0, 1.5];
 			_intersectEndASL = _intersectStartASL vectorAdd (_edgeDirection vectorMultiply 4);
 			_surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _player, objNull, true, 1, "FIRE", "NONE"];
-			if (count _surfaces > 0) exitWith { [] };
+			if (count _surfaces > 0) exitWith {[]};
 		
 			[_edgeMiddle, _edgeDirection, [_edgeStart, _edgeEnd, _edgeMiddle]];
 		} else {
@@ -237,8 +236,6 @@ AUR_Advanced_Urban_Rappelling_Install = {
 	AUR_Rappel_Action_Check = {
 		params ["_player"];
 		if (!("AUR_Rappel_Gear" in (items _player)) || !("AUR_Rappel_Rope" in (items _player))) exitWith {false};
-		// if (!("AUR_Rappel_Gear" in (items _player))) exitWith {false;};
-		// if (!("AUR_Rappel_Rope" in (items _player))) exitWith {false;};
 		if (_player getVariable ["AUR_Is_Rappelling", false]) exitWith {false};
 		if (vehicle _player != _player) exitWith {false};
 		if (([_player] call AUR_Get_Player_Height_Above_Ground) < 4) exitWith {false};
@@ -313,15 +310,15 @@ AUR_Advanced_Urban_Rappelling_Install = {
 	AUR_Rappel_AI_Units_Action = {
 		params ["_player"];
 		private _aiUnits = [_player] call AUR_Get_AI_Units_Ready_To_Rappel;
-		private _rappelPoint = _player getVariable ["AUR_Rappelling_Last_Rappel_Point",[]];
+		private _rappelPoint = _player getVariable ["AUR_Rappelling_Last_Rappel_Point", []];
 		if ([_player] call AUR_Rappel_Action_Check) then {
-			_rappelPoint = [_player,"POSITION"] call AUR_Find_Nearby_Rappel_Point;	
+			_rappelPoint = [_player, "POSITION"] call AUR_Find_Nearby_Rappel_Point;	
 		};
 		private _index = 0;
 		private _allRappelPoints = _rappelPoint select 2;
 		if (count _rappelPoint > 0) then {
 			{
-				if (!(_x getVariable ["AUR_Is_Rappelling",false])) then {
+				if (!(_x getVariable ["AUR_Is_Rappelling", false])) then {
 					[_x, _allRappelPoints select (_index mod 3), _rappelPoint select 1,60] spawn AUR_Rappel;
 					sleep 5;
 				};
@@ -333,8 +330,6 @@ AUR_Advanced_Urban_Rappelling_Install = {
 
 	AUR_Rappel_AI_Units_Action_Check = {
 		params ["_player"];
-		// if (!("AUR_Rappel_Gear" in (items _player))) exitWith {false;};
-		// if (!("AUR_Rappel_Rope" in (items _player))) exitWith {false;};
 		if (!("AUR_Rappel_Gear" in (items _player)) || !("AUR_Rappel_Rope" in (items _player))) exitWith {false};
 		if (leader _player != _player) exitWith {false};
 		private _hasAiUnits = false;
@@ -350,9 +345,9 @@ AUR_Advanced_Urban_Rappelling_Install = {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Rappel_Unit = {
-		params ["_unit", ["_ropeLength",0], ["_rappelPoint",[]], ["_rappelDirection", []]];
+		params ["_unit", ["_ropeLength", 0], ["_rappelPoint", []], ["_rappelDirection", []]];
 		if (count _rappelPoint == 0) then {
-			private _findRappelPointResult = [_unit,"POSITION"] call AUR_Find_Nearby_Rappel_Point;	
+			private _findRappelPointResult = [_unit, "POSITION"] call AUR_Find_Nearby_Rappel_Point;	
 			if (count _findRappelPointResult > 0) then {
 				_rappelPoint = _findRappelPointResult select 0;
 				_rappelDirection = _findRappelPointResult select 1;
@@ -374,37 +369,31 @@ AUR_Advanced_Urban_Rappelling_Install = {
 
 		_player setVariable ["AUR_Is_Rappelling", true, true];
 		private _playerPreRappelPosition = getPosASL _player;
-
-		// Start player rappelling 2m out from the rappel point
-		private _playerStartPosition = _rappelPoint vectorAdd (_rappelDirection vectorMultiply 2);
+		private _playerStartPosition = _rappelPoint vectorAdd (_rappelDirection vectorMultiply 2);	// Start player rappelling 2m out from the rappel point
 		_playerStartPosition set [2, getPosASL _player select 2];
 		_player setPosWorld _playerStartPosition;
-		
-		// Create anchor for rope (at rappel point)
-		private _anchor = createVehicle ["Land_Can_V2_F", _player, [], 0, "CAN_COLLIDE"];
+		private _anchor = createVehicle ["Land_Can_V2_F", _player, [], 0, "CAN_COLLIDE"];	// Create anchor for rope (at rappel point)
 		hideObject _anchor;
 		_anchor enableSimulation false;
 		_anchor allowDamage false;
-		[[_anchor],"AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
-
-		// Create rappel device (attached to player)
-		private _rappelDevice = createVehicle ["B_static_AA_F", _player, [], 0, "CAN_COLLIDE"];
+		[[_anchor], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
+		private _rappelDevice = createVehicle ["B_static_AA_F", _player, [], 0, "CAN_COLLIDE"];	// Create rappel device (attached to player)
 		hideObject _rappelDevice;
 		_rappelDevice setPosWorld _playerStartPosition;
 		_rappelDevice allowDamage false;
-		[[_rappelDevice],"AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
+		[[_rappelDevice], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
 		
 		[[_player, _rappelDevice, _anchor], "AUR_Play_Rappelling_Sounds_Global"] call AUR_RemoteExecServer;
-		private _rope2 = ropeCreate [_rappelDevice, [-0.15,0,0], _ropeLength - 1];
+		private _rope2 = ropeCreate [_rappelDevice, [-0.15, 0, 0], _ropeLength - 1];
 		_rope2 allowDamage false;
 		private _rope1 = ropeCreate [_rappelDevice, [0,0.15,0], _anchor, [0, 0, 0], 1];
 		_rope1 allowDamage false;
 		
 		_anchor setPosWorld _rappelPoint;
 
-		_player setVariable ["AUR_Rappel_Rope_Top",_rope1];
-		_player setVariable ["AUR_Rappel_Rope_Bottom",_rope2];
-		_player setVariable ["AUR_Rappel_Rope_Length",_ropeLength];
+		_player setVariable ["AUR_Rappel_Rope_Top", _rope1];
+		_player setVariable ["AUR_Rappel_Rope_Bottom", _rope2];
+		_player setVariable ["AUR_Rappel_Rope_Length", _ropeLength];
 
 		[_player] spawn AUR_Enable_Rappelling_Animation;
 		
@@ -414,26 +403,26 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		private _gravityAccelerationVec = [0, 0, -9.8];
 		private _velocityVec = [0, 0, 0];
 		private _lastTime = diag_tickTime;
-		private _lastPosition = AGLtoASL (_rappelDevice modelToWorldVisual [0,0,0]);
+		private _lastPosition = AGLtoASL (_rappelDevice modelToWorldVisual [0, 0, 0]);
 		private _decendRopeKeyDownHandler = -1;
 		private _ropeKeyUpHandler = -1;
 		if (_player == player) then {	
 			_decendRopeKeyDownHandler = (findDisplay 46) displayAddEventHandler ["KeyDown", {
 				if (_this select 1 in (actionKeys "MoveBack")) then {
-					_ropeLength = player getVariable ["AUR_Rappel_Rope_Length",100];
+					_ropeLength = player getVariable ["AUR_Rappel_Rope_Length", 100];
 					private _topRope = player getVariable ["AUR_Rappel_Rope_Top", nil];
 					if (!isNil "_topRope") then {
 						if ((ropeLength _topRope) + 2 < _ropeLength)  then {
-							ropeUnwind [ _topRope, 2, ((ropeLength _topRope) + 0.1) min _ropeLength];
+							ropeUnwind [_topRope, 2, ((ropeLength _topRope) + 0.1) min _ropeLength];
 							private _bottomRope = player getVariable ["AUR_Rappel_Rope_Bottom", nil];
 							if (!isNil "_bottomRope") then {
-								ropeUnwind [ _bottomRope, 2, ((ropeLength _bottomRope) - 0.1) max 0];
+								ropeUnwind [_bottomRope, 2, ((ropeLength _bottomRope) - 0.1) max 0];
 							};
 						};
 					};
 				};
 				if (_this select 1 in (actionKeys "MoveForward")) then {
-					_ropeLength = player getVariable ["AUR_Rappel_Rope_Length",100];
+					_ropeLength = player getVariable ["AUR_Rappel_Rope_Length", 100];
 					private _topRope = player getVariable ["AUR_Rappel_Rope_Top", nil];
 					if (!isNil "_topRope") then {
 						// Get the surface normal of the surface the player is hanging against
@@ -492,7 +481,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			_environmentWindVelocity = wind;
 			_playerWindVelocity = _velocityVec vectorMultiply -1;
 			_totalWindVelocity = _environmentWindVelocity vectorAdd _playerWindVelocity;
-			_totalWindForce = _totalWindVelocity vectorMultiply (9.8/53);
+			_totalWindForce = _totalWindVelocity vectorMultiply (9.8 / 53);
 
 			_accelerationVec = _gravityAccelerationVec vectorAdd _totalWindForce vectorAdd _walkingOnWallForce;
 			_velocityVec = _velocityVec vectorAdd ( _accelerationVec vectorMultiply _timeSinceLastUpdate );
@@ -508,19 +497,19 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			_intersectionTests = 10;
 			for "_i" from 0 to _intersectionTests do
 			{
-				_axis1 = cos ((360/_intersectionTests)*_i);
-				_axis2 = sin ((360/_intersectionTests)*_i);
+				_axis1 = cos ((360 / _intersectionTests) * _i);
+				_axis2 = sin ((360 / _intersectionTests) * _i);
 				{
 					_directionUnitVector = vectorNormalized _x;
 					_intersectStartASL = _newPosition;
 					_intersectEndASL = _newPosition vectorAdd ( _directionUnitVector vectorMultiply _radius );
-					_surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _player, objNull, true, 10,"FIRE","NONE"];
+					_surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _player, objNull, true, 10, "FIRE", "NONE"];
 					{
 						_x params ["_intersectionPositionASL", "_surfaceNormal", "_intersectionObject"];
 						_objectFileName = str _intersectionObject;
 						if((_objectFileName find "rope") == -1 && not (_intersectionObject isKindOf "RopeSegment") && (_objectFileName find " t_") == -1 && (_objectFileName find " b_") == -1 ) then {
 							if(_newPosition distance _intersectionPositionASL < 1) then {
-								_newPosition = _intersectionPositionASL vectorAdd ( ( vectorNormalized ( _intersectEndASL vectorFromTo _intersectStartASL )) vectorMultiply  (_radius) );
+								_newPosition = _intersectionPositionASL vectorAdd (( vectorNormalized ( _intersectEndASL vectorFromTo _intersectStartASL )) vectorMultiply  (_radius));
 							};
 							_velocityVec = _velocityVec vectorAdd (( _surfaceNormal vectorMultiply (_velocityVec vectorDotProduct _surfaceNormal)) vectorMultiply -1);
 						};
@@ -559,7 +548,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 
 				if (_isAgainstSurface) then {
 					if (_jumpPressed) then {
-						_jumpForce = ((( 1.5 min _jumpPressedTime )/1.5) * 4.5) max 2.5;
+						_jumpForce = ((( 1.5 min _jumpPressedTime ) / 1.5) * 4.5) max 2.5;
 						_velocityVec = _velocityVec vectorAdd (vectorDir _player vectorMultiply (_jumpForce * -1));
 						_player setVariable ["AUR_JUMP_PRESSED", false];
 					};
@@ -580,7 +569,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 				_walkingOnWallForce = [0, 0, 0];
 			};
 			
-			_rappelDevice setPosWorld (_newPosition vectorAdd (_velocityVec vectorMultiply 0.1) );
+			_rappelDevice setPosWorld (_newPosition vectorAdd (_velocityVec vectorMultiply 0.1));
 			_rappelDevice setVectorDir (vectorDir _player); 
 			
 			_player setPosWorld (_newPosition vectorAdd [0, 0, -0.6]);
@@ -625,13 +614,13 @@ AUR_Advanced_Urban_Rappelling_Install = {
 					_player allowDamage true;
 				};	
 			};
-			
 		};
 		
 		if (_player getVariable ["AUR_Climb_To_Top", false]) then {
 			_player allowDamage false;
 			_player setPosASL _playerPreRappelPosition;
 		};
+		// once rappeling unit arrives at the bottom, this section will delete ropes from units inventory, and pile up those ropes at upper starting point
 		// _topRope = _player getVariable ["AUR_Rappel_Rope_Top", nil];
 		// if (!isNil "_topRope") then {
 			// if (((getPosASL _player select 2) + 1) < (_playerPreRappelPosition select 2)) then {
@@ -718,7 +707,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		} else {
 			if (local _player) then {
 				_player switchMove "HubSittingChairC_idle1";
-				_player setVariable ["AUR_Animation_Move", "HubSittingChairC_idle1",true];
+				_player setVariable ["AUR_Animation_Move", "HubSittingChairC_idle1", true];
 			} else {
 				_player setVariable ["AUR_Animation_Move", "HubSittingChairC_idle1"];		
 			};
@@ -866,7 +855,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 	AUR_RemoteExec = {
 		params ["_params", "_functionName", "_target", ["_isCall", false]];
 		if (!isNil "ExileClient_system_network_send") then {
-			["AdvancedUrbanRappellingRemoteExecClient",[_params, _functionName, _target, _isCall]] call ExileClient_system_network_send;
+			["AdvancedUrbanRappellingRemoteExecClient", [_params, _functionName, _target, _isCall]] call ExileClient_system_network_send;
 		} else {
 			if (_isCall) then {
 				_params remoteExecCall [_functionName, _target];
@@ -878,7 +867,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_RemoteExecServer = {
-		params ["_params","_functionName",["_isCall",false]];
+		params ["_params", "_functionName", ["_isCall", false]];
 		if (!isNil "ExileClient_system_network_send") then {
 			["AdvancedUrbanRappellingRemoteExecServer", [_params, _functionName, _isCall]] call ExileClient_system_network_send;
 		} else {
@@ -913,7 +902,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		
 		ExileServer_AdvancedUrbanRappelling_network_AdvancedUrbanRappellingRemoteExecClient = {
 			params ["_sessionId", "_messageParameters"];
-			_messageParameters params ["_params","_functionName","_target",["_isCall",false]];
+			_messageParameters params ["_params", "_functionName", "_target", ["_isCall", false]];
 			if (_functionName in AUR_SUPPORTED_REMOTEEXECCLIENT_FUNCTIONS) then {
 				if (_isCall) then {
 					_params remoteExecCall [_functionName, _target];
