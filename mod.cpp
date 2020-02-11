@@ -1,12 +1,12 @@
-name = "Advanced Urban Rappelling";
+name = $STR_AUR_ADVANCED_RAPPELING_NAME_V;
 picture = "logo.paa";
-description = "Advanced Urban Rappelling";
+description = $STR_AUR_ADVANCED_RAPPELING_NAME_V;
 logo = "logo.paa";
 logoOver = "logo.paa";
-tooltip = "Advanced Urban Rappelling";
+tooltip = $STR_AUR_ADVANCED_RAPPELING_NAME_V;
 tooltipOwned = "Advanced Urban Rappelling Owned";
-overview = "Advanced Urban Rappelling";
+overview = $STR_AUR_ADVANCED_RAPPELING_OVERVIEW;
 author = "[SA] Duda";
 overviewPicture = "logo.paa";
-overviewText = "Advanced Urban Rappelling";
+overviewText = $STR_AUR_ADVANCED_RAPPELING_NAME_V;
 overviewFootnote = "";
