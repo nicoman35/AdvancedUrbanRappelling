@@ -21,7 +21,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 	diag_log "Advanced Urban Rappelling Loading...";
 
 	AUR_Has_Addon_Animations_Installed = {
-		(count getText (configFile / "CfgMovesBasic" / "ManActions" / "AUR_01" )) > 0;
+		(count getText (configFile / "CfgMovesBasic" / "ManActions" / "AUR_01")) > 0;
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Has_Addon_Sounds_Installed = {
@@ -36,7 +36,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 
 	AUR_Play_Rappelling_Sounds = {
 		params ["_player", "_rappelDevice", "_rappelAncor"];
-		if (!hasInterface || !(call AUR_Has_Addon_Sounds_Installed) ) exitWith {};
+		if (!hasInterface || !(call AUR_Has_Addon_Sounds_Installed)) exitWith {};
 		if (player distance _player < 15) then {
 			[_player, "AUR_Rappel_Start"] call AUR_Play_3D_Sound;
 			[_rappelDevice, "AUR_Rappel_Loop"] call AUR_Play_3D_Sound;
@@ -46,7 +46,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			private _lastDistanceFromAnchor = _rappelDevice distance _rappelAncor;
 			while {_player getVariable ["AUR_Is_Rappelling", false]} do {
 				private _distanceFromAnchor = _rappelDevice distance _rappelAncor;
-				if(_distanceFromAnchor > _lastDistanceFromAnchor + 0.1 && player distance _player < 15) then {
+				if (_distanceFromAnchor > _lastDistanceFromAnchor + 0.1 && player distance _player < 15) then {
 					[_player, "AUR_Rappel_Loop"] call AUR_Play_3D_Sound;
 					sleep 0.2;
 					[_rappelDevice, "AUR_Rappel_Loop"] call AUR_Play_3D_Sound;
@@ -105,10 +105,8 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		private _edges = [];
 		private _edge = [];
 		private _fastExistsEdgeFound = false;
-		
-		// Search for nearby edges
-		for "_i" from 0 to _intersectionTests do
-		{
+				
+		for "_i" from 0 to _intersectionTests do {					// Search for nearby edges
 			private  _x = cos ((360 / _intersectionTests) * _i);
 			private  _y = sin ((360 / _intersectionTests) * _i);
 			private _directionUnitVector = vectorNormalized [_x, _y, 0];
@@ -168,7 +166,6 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			
 			// Check to see if there's a surface we can attach the rope to (so it doesn't hang in the air)
 			_playerPositionASL = getPosASL _player;
-			
 			private _intersectStartASL = _playerPositionASL vectorAdd ((_playerPositionASL vectorFromTo _edgeStart) vectorMultiply (_intersectionRadius));
 			_intersectEndASL = _intersectStartASL vectorAdd ((_intersectStartASL vectorFromTo _playerPositionASL) vectorMultiply (_intersectionRadius * 2)) vectorAdd [0, 0, -0.5];
 			_surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _player, objNull, true, 1, "FIRE", "NONE"];
