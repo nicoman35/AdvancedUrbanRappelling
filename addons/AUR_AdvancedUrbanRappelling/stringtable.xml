@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project name="AUR_ADVANCED_RAPPELING">
+    <Package name="AUR_ADVANCED">
+		<Key ID="STR_AUR_ADVANCED_RAPPELING_NAME_V">
+            <Original>Advanced Urban Rappelling v1.0a</Original>
+            <German>Fortgeschrittenes Urbanes Abseilen v1.0a</German>
+        </Key>
+		<Key ID="STR_AUR_ADVANCED_RAPPELING_NAME">
+            <Original>Advanced Urban Rappelling</Original>
+            <German>Fortgeschrittenes Urbanes Abseilen</German>
+        </Key>
+		<Key ID="STR_AUR_ROPES_SETTING">
+            <Original>Leave Ropes At Start</Original>
+            <German>Seile Am Start Zurücklassen</German>
+        </Key>
+		<Key ID="STR_AUR_ROPES_SETTING_TIP">
+            <Original>Used ropes are left back at starting point.</Original>
+            <German>Benutzte Seile werden am Startpunkt zurückgelassen.</German>
+        </Key>
+		<Key ID="STR_AUR_ADVANCED_RAPPELING_OVERVIEW">
+            <Original>Advanced Urban Rappelling v1.0a &lt;br /&gt;Rappel down anything that's more than 4-5m high. This includes buildings, cliff, towers, etc. Everything works as long a you can walk to an edge.</Original>
+            <German>Fortgeschrittenes Urbanes Abseilen v1.0a &lt;br /&gt;Überall abseilen, wo der Höhenunterschied größer als 4-5m ist. Zum Beispiel Gebäude, Klippen, Türme, etc.. Funktioniert überall, wo an eine Kante gelangt werden kann.</German>
+        </Key>
+		<Key ID="STR_AUR_RAPPEL_SELF">
+            <Original>Rappel Self</Original>
+            <German>Abseilen</German>
+        </Key>
+		<Key ID="STR_AUR_RAPPEL_AI">
+            <Original>Rappel AI Units</Original>
+            <German>AI Einheiten Abseilen</German>
+        </Key>
+		<Key ID="STR_AUR_CLIMB_TO">
+            <Original>Climb To Top</Original>
+            <German>Hochklettern</German>
+        </Key>
+		<Key ID="STR_AUR_RAPPEL_DETACH">
+            <Original>Detach Rappel Device</Original>
+            <German>Klettergeschirr Loslösen</German>
+		</Key>
+		<Key ID="STR_AUR_RAPPELING_GEAR">
+            <Original>Rappelling Gear</Original>
+            <German>Klettergeschirr</German>
+        </Key>
+		<Key ID="STR_AUR_RAPPELING_GEAR_DESCR">
+            <Original>Essential rappelling gear - including harness, for urban rappelling.</Original>
+            <German>Essenzielle Kletterausrüstung - beinhaltet Klettergeschirr, für urbanes Abseilen.</German>
+        </Key>
+		<Key ID="STR_AUR_RAPPELING_ROPE">
+            <Original>Rappelling Rope 10 m</Original>
+            <German>Kletterseil 10 m</German>
+		</Key>
+		<Key ID="STR_AUR_RAPPELING_ROPE_DESCR">
+            <Original>10 m rappel rope - required to rappel down buildings. Use multiple for higher altitudes.</Original>
+            <German>10 m Kletterseil - für urbanes Abseilen benötigt. Für größere Höhen, mehrere verwenden.</German>
+		</Key>
+	</Package>
+</Project>
