@@ -21,21 +21,18 @@ AUR_Advanced_Urban_Rappelling_Install = {
 	diag_log "Advanced Urban Rappelling Loading...";
 
 	AUR_Has_Addon_Animations_Installed = {
-		(count getText ( configFile / "CfgMovesBasic" / "ManActions" / "AUR_01" )) > 0;
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+		(count getText (configFile / "CfgMovesBasic" / "ManActions" / "AUR_01" )) > 0;
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Has_Addon_Sounds_Installed = {
-		private _config = getArray ( configFile / "CfgSounds" / "AUR_Rappel_Start" / "sound" );
-		private _configMission = getArray ( missionConfigFile / "CfgSounds" / "AUR_Rappel_Start" / "sound" );
+		private _config = getArray (configFile / "CfgSounds" / "AUR_Rappel_Start" / "sound");
+		private _configMission = getArray (missionConfigFile / "CfgSounds" / "AUR_Rappel_Start" / "sound");
 		(count _config > 0 || count _configMission > 0);
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Play_Rappelling_Sounds_Global = {
 		_this remoteExec ["AUR_Play_Rappelling_Sounds", 0];
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Play_Rappelling_Sounds = {
 		params ["_player", "_rappelDevice", "_rappelAncor"];
@@ -67,8 +64,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 				[_player, "AUR_Rappel_End"] call AUR_Play_3D_Sound;
 			};
 		};
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Play_3D_Sound = {
 		params ["_soundSource", "_className"];
@@ -80,9 +76,8 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		if (count _configMission > 0) exitWith {
 			_soundSource say3D _className;
 		};
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	
 	/*
 		Description:
 		Finds the nearest rappel point within 1.5m of the specified player.
@@ -104,7 +99,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		private _intersectionRadius = 1.5;
 		private _intersectionDistance = 4;
 		private _intersectionTests = 40;
-		if(_searchType == "FAST_EXISTS_CHECK") then {_intersectionTests = 8};
+		if (_searchType == "FAST_EXISTS_CHECK") then {_intersectionTests = 8};
 		private _lastIntersectStartASL = [];
 		private _lastIntersectionIntersected = false;
 		private _edges = [];
@@ -144,7 +139,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			};
 		};
 		
-		if (_searchType == "FAST_EXISTS_CHECK") exitWith { _fastExistsEdgeFound; };
+		if (_searchType == "FAST_EXISTS_CHECK") exitWith {_fastExistsEdgeFound};
 		
 		// If edges found, return nearest edge
 		if (count _edge == 1) then {
@@ -165,16 +160,16 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		
 		if (count _largestEdge > 0) then {
 			private _edgeStart = (_largestEdge select 0);
-			_edgeStart set [2,getPosASL _player select 2];
+			_edgeStart set [2, getPosASL _player select 2];
 			private _edgeEnd = (_largestEdge select 1);
-			_edgeEnd set [2,getPosASL _player select 2];
-			private _edgeMiddle = _edgeStart vectorAdd (( _edgeEnd vectorDiff _edgeStart ) vectorMultiply 0.5 );
-			private _edgeDirection = vectorNormalized (( _edgeStart vectorFromTo _edgeEnd ) vectorCrossProduct [0,0,1]);
+			_edgeEnd set [2, getPosASL _player select 2];
+			private _edgeMiddle = _edgeStart vectorAdd ((_edgeEnd vectorDiff _edgeStart) vectorMultiply 0.5);
+			private _edgeDirection = vectorNormalized ((_edgeStart vectorFromTo _edgeEnd) vectorCrossProduct [0,0,1]);
 			
 			// Check to see if there's a surface we can attach the rope to (so it doesn't hang in the air)
 			_playerPositionASL = getPosASL _player;
 			
-			_intersectStartASL = _playerPositionASL vectorAdd ((_playerPositionASL vectorFromTo _edgeStart) vectorMultiply (_intersectionRadius));
+			private _intersectStartASL = _playerPositionASL vectorAdd ((_playerPositionASL vectorFromTo _edgeStart) vectorMultiply (_intersectionRadius));
 			_intersectEndASL = _intersectStartASL vectorAdd ((_intersectStartASL vectorFromTo _playerPositionASL) vectorMultiply (_intersectionRadius * 2)) vectorAdd [0, 0, -0.5];
 			_surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _player, objNull, true, 1, "FIRE", "NONE"];
 			if (count _surfaces > 0) then {
@@ -205,9 +200,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		} else {
 			[];
 		};
-		
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Rappel_Action = {
 		params ["_player"];	
@@ -224,14 +217,12 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		} else {
 			[["Couldn't attach rope. Move closer to edge!", false], "AUR_Hint", _player] call AUR_RemoteExec;
 		};
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Get_Player_Height_Above_Ground = {
 		params ["_player"];
 		(ASLtoAGL (getPosASL _player)) select 2;
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Rappel_Action_Check = {
 		params ["_player"];
@@ -241,38 +232,33 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		if (([_player] call AUR_Get_Player_Height_Above_Ground) < 4) exitWith {false};
 		if !([_player, "FAST_EXISTS_CHECK"] call AUR_Find_Nearby_Rappel_Point) exitWith {false};
 		if (count ([_player, "POSITION"] call AUR_Find_Nearby_Rappel_Point) == 0) exitWith {false};
-		true;
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+		true
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Rappel_Climb_To_Top_Action = {
 		params ["_player"];
 		_player setVariable ["AUR_Climb_To_Top", true];
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Rappel_Climb_To_Top_Action_Check = {
 		params ["_player"];
-		if !(_player getVariable ["AUR_Is_Rappelling",false]) exitWith {false;};
+		if !(_player getVariable ["AUR_Is_Rappelling", false]) exitWith {false};
 		private _topRope = player getVariable ["AUR_Rappel_Rope_Top", nil];
-		if (isNil "_topRope") exitWith {false;};
-		if (ropeLength _topRope > 1) exitWith {false;};
-		true;
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+		if (isNil "_topRope") exitWith {false};
+		if (ropeLength _topRope > 1) exitWith {false};
+		true
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Rappel_Detach_Action = {
 		params ["_player"];
 		_player setVariable ["AUR_Detach_Rope", true];
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Rappel_Detach_Action_Check = {
 		params ["_player"];
-		if !(_player getVariable ["AUR_Is_Rappelling",false]) exitWith {false;};
-		true;
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+		if !(_player getVariable ["AUR_Is_Rappelling", false]) exitWith {false};
+		true
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Get_AI_Units_Ready_To_Rappel = {
 		params ["_player"];
@@ -285,12 +271,12 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		} forEach units _player;
 		if (!_hasAiUnits) exitWith {[]};
 		private _canRappel = [_player] call AUR_Rappel_Action_Check;
-		private _isRappelling = _player getVariable ["AUR_Is_Rappelling",false];
-		private _didRappel = (diag_tickTime - (_player getVariable ["AUR_Rappelling_Last_Started_Time",0])) < 300;
+		private _isRappelling = _player getVariable ["AUR_Is_Rappelling", false];
+		private _didRappel = (diag_tickTime - (_player getVariable ["AUR_Rappelling_Last_Started_Time", 0])) < 300;
 		private _aiUnitsReady = [];
 		if (_canRappel || _isRappelling || _didRappel) then {
-			private _rappelPoint = _player getVariable ["AUR_Rappelling_Last_Rappel_Point",[]];
-			private _rappelPosition = [0,0,0];
+			private _rappelPoint = _player getVariable ["AUR_Rappelling_Last_Rappel_Point", []];
+			private _rappelPosition = [0, 0, 0];
 			if(count _rappelPoint > 0) then {
 				_rappelPosition = ASLToATL (_rappelPoint select 0);
 			};
@@ -303,9 +289,8 @@ AUR_Advanced_Urban_Rappelling_Install = {
 				};
 			} forEach units _player;
 		};
-		_aiUnitsReady;
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+		_aiUnitsReady
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Rappel_AI_Units_Action = {
 		params ["_player"];
@@ -325,8 +310,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 				_index = _index + 1;
 			} forEach (_aiUnits);
 		};
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Rappel_AI_Units_Action_Check = {
 		params ["_player"];
@@ -334,15 +318,12 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		if (leader _player != _player) exitWith {false};
 		private _hasAiUnits = false;
 		{
-			if (!isPlayer _x) exitWith {
-				_hasAiUnits = true;
-			};
+			if (!isPlayer _x) exitWith {_hasAiUnits = true};
 		} forEach units _player;
 		if (!_hasAiUnits) exitWith {false};
 		if ((count ([_player] call AUR_Get_AI_Units_Ready_To_Rappel)) == 0) exitWith {false};
-		true;
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+		true
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Rappel_Unit = {
 		params ["_unit", ["_ropeLength", 0], ["_rappelPoint", []], ["_rappelDirection", []]];
@@ -361,8 +342,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		} else {
 			hint "Could not rappel unit - move unit closer to edge!";
 		};
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Rappel = {
 		params ["_player", "_rappelPoint", "_rappelDirection", "_ropeLength"];
@@ -461,9 +441,9 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			[_rope1, _rope2] spawn {
 				params ["_rope1", "_rope2"];
 				sleep 1;
-				_randomSpeedFactor = ((random 10) - 5) / 10;
-				ropeUnwind [ _rope1, 2 + _randomSpeedFactor, (ropeLength _rope1) + (ropeLength _rope2)];
-				ropeUnwind [ _rope2, 2 + _randomSpeedFactor, 0];
+				private _randomSpeedFactor = ((random 10) - 5) / 10;
+				ropeUnwind [_rope1, 2 + _randomSpeedFactor, (ropeLength _rope1) + (ropeLength _rope2)];
+				ropeUnwind [_rope2, 2 + _randomSpeedFactor, 0];
 			};
 		};
 		
@@ -471,45 +451,44 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		private _lastAiJumpTime = diag_tickTime;
 		
 		while {true} do {
-			_currentTime = diag_tickTime;
-			_timeSinceLastUpdate = _currentTime - _lastTime;
+			private _currentTime = diag_tickTime;
+			private _timeSinceLastUpdate = _currentTime - _lastTime;
 			_lastTime = _currentTime;
-			if(_timeSinceLastUpdate > 1) then {
+			if (_timeSinceLastUpdate > 1) then {
 				_timeSinceLastUpdate = 0;
 			};
 
-			_environmentWindVelocity = wind;
-			_playerWindVelocity = _velocityVec vectorMultiply -1;
-			_totalWindVelocity = _environmentWindVelocity vectorAdd _playerWindVelocity;
-			_totalWindForce = _totalWindVelocity vectorMultiply (9.8 / 53);
+			private _environmentWindVelocity = wind;
+			private _playerWindVelocity = _velocityVec vectorMultiply -1;
+			private _totalWindVelocity = _environmentWindVelocity vectorAdd _playerWindVelocity;
+			private _totalWindForce = _totalWindVelocity vectorMultiply (9.8 / 53);
 
-			_accelerationVec = _gravityAccelerationVec vectorAdd _totalWindForce vectorAdd _walkingOnWallForce;
-			_velocityVec = _velocityVec vectorAdd ( _accelerationVec vectorMultiply _timeSinceLastUpdate );
-			_newPosition = _lastPosition vectorAdd ( _velocityVec vectorMultiply _timeSinceLastUpdate );
+			private _accelerationVec = _gravityAccelerationVec vectorAdd _totalWindForce vectorAdd _walkingOnWallForce;
+			_velocityVec = _velocityVec vectorAdd (_accelerationVec vectorMultiply _timeSinceLastUpdate);
+			private _newPosition = _lastPosition vectorAdd (_velocityVec vectorMultiply _timeSinceLastUpdate);
 
-			if(_newPosition distance _rappelPoint > ((ropeLength _rope1) + 1)) then {
-				_newPosition = (_rappelPoint) vectorAdd (( vectorNormalized ( (_rappelPoint) vectorFromTo _newPosition )) vectorMultiply ((ropeLength _rope1) + 1));
-				_surfaceVector = ( vectorNormalized ( _newPosition vectorFromTo (_rappelPoint) ));
-				_velocityVec = _velocityVec vectorAdd (( _surfaceVector vectorMultiply (_velocityVec vectorDotProduct _surfaceVector)) vectorMultiply -1);
+			if (_newPosition distance _rappelPoint > ((ropeLength _rope1) + 1)) then {
+				_newPosition = (_rappelPoint) vectorAdd ((vectorNormalized ((_rappelPoint) vectorFromTo _newPosition)) vectorMultiply ((ropeLength _rope1) + 1));
+				private _surfaceVector = (vectorNormalized (_newPosition vectorFromTo (_rappelPoint)));
+				_velocityVec = _velocityVec vectorAdd ((_surfaceVector vectorMultiply (_velocityVec vectorDotProduct _surfaceVector)) vectorMultiply -1);
 			};
 
-			_radius = 0.85;
-			_intersectionTests = 10;
-			for "_i" from 0 to _intersectionTests do
-			{
-				_axis1 = cos ((360 / _intersectionTests) * _i);
-				_axis2 = sin ((360 / _intersectionTests) * _i);
+			private _radius = 0.85;
+			private _intersectionTests = 10;
+			for "_i" from 0 to _intersectionTests do {
+				private _axis1 = cos ((360 / _intersectionTests) * _i);
+				private _axis2 = sin ((360 / _intersectionTests) * _i);
 				{
-					_directionUnitVector = vectorNormalized _x;
-					_intersectStartASL = _newPosition;
-					_intersectEndASL = _newPosition vectorAdd ( _directionUnitVector vectorMultiply _radius );
-					_surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _player, objNull, true, 10, "FIRE", "NONE"];
+					private _directionUnitVector = vectorNormalized _x;
+					private _intersectStartASL = _newPosition;
+					private _intersectEndASL = _newPosition vectorAdd (_directionUnitVector vectorMultiply _radius);
+					private _surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _player, objNull, true, 10, "FIRE", "NONE"];
 					{
 						_x params ["_intersectionPositionASL", "_surfaceNormal", "_intersectionObject"];
-						_objectFileName = str _intersectionObject;
-						if((_objectFileName find "rope") == -1 && not (_intersectionObject isKindOf "RopeSegment") && (_objectFileName find " t_") == -1 && (_objectFileName find " b_") == -1 ) then {
-							if(_newPosition distance _intersectionPositionASL < 1) then {
-								_newPosition = _intersectionPositionASL vectorAdd (( vectorNormalized ( _intersectEndASL vectorFromTo _intersectStartASL )) vectorMultiply  (_radius));
+						private _objectFileName = str _intersectionObject;
+						if ((_objectFileName find "rope") == -1 && not (_intersectionObject isKindOf "RopeSegment") && (_objectFileName find " t_") == -1 && (_objectFileName find " b_") == -1) then {
+							if (_newPosition distance _intersectionPositionASL < 1) then {
+								_newPosition = _intersectionPositionASL vectorAdd ((vectorNormalized (_intersectEndASL vectorFromTo _intersectStartASL)) vectorMultiply (_radius));
 							};
 							_velocityVec = _velocityVec vectorAdd (( _surfaceNormal vectorMultiply (_velocityVec vectorDotProduct _surfaceNormal)) vectorMultiply -1);
 						};
@@ -517,14 +496,13 @@ AUR_Advanced_Urban_Rappelling_Install = {
 				} forEach [[_axis1, _axis2, 0], [_axis1, 0, _axis2], [0, _axis1, _axis2]];
 			};
 			
-			_jumpPressed = _player getVariable ["AUR_JUMP_PRESSED", false];
-			_jumpPressedTime = _player getVariable ["AUR_JUMP_PRESSED_TIME", 0];
-			_leftDown = _player getVariable ["AUR_LEFT_DOWN", false];
-			_rightDown = _player getVariable ["AUR_RIGHT_DOWN", false];
-			
-			// Simulate AI jumping off wall randomly
-			if(_player != player) then {
-				if(diag_tickTime - _lastAiJumpTime > (random 30) max 5) then {
+			private _jumpPressed = _player getVariable ["AUR_JUMP_PRESSED", false];
+			private _jumpPressedTime = _player getVariable ["AUR_JUMP_PRESSED_TIME", 0];
+			private _leftDown = _player getVariable ["AUR_LEFT_DOWN", false];
+			private _rightDown = _player getVariable ["AUR_RIGHT_DOWN", false];
+
+			if (_player != player) then {			// Simulate AI jumping off wall randomly
+				if (diag_tickTime - _lastAiJumpTime > (random 30) max 5) then {
 					_jumpPressed = true;
 					_jumpPressedTime = 0;
 					_lastAiJumpTime = diag_tickTime;
@@ -532,11 +510,9 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			};
 			
 			if (_jumpPressed || _leftDown || _rightDown) then {
-				
-				// Get the surface normal of the surface the player is hanging against
 				_intersectStartASL = _newPosition;
 				_intersectEndASL = _intersectStartASL vectorAdd (vectorDir _player vectorMultiply (_radius + 0.3));
-				_surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _player, objNull, true, 10, "GEOM", "NONE"];
+				_surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _player, objNull, true, 10, "GEOM", "NONE"];	// Get the surface normal of the surface the player is hanging against
 				_isAgainstSurface = false;
 				{
 					_x params ["_intersectionPositionASL", "_surfaceNormal", "_intersectionObject"];
@@ -564,16 +540,13 @@ AUR_Advanced_Urban_Rappelling_Install = {
 				} else {
 					_player setVariable ["AUR_JUMP_PRESSED", false];
 				};
-			
 			} else {
 				_walkingOnWallForce = [0, 0, 0];
 			};
 			
 			_rappelDevice setPosWorld (_newPosition vectorAdd (_velocityVec vectorMultiply 0.1));
 			_rappelDevice setVectorDir (vectorDir _player); 
-			
 			_player setPosWorld (_newPosition vectorAdd [0, 0, -0.6]);
-
 			_player setVelocity [0, 0, 0];
 
 			_lastPosition = _newPosition;
@@ -609,9 +582,8 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			};		
 
 			if (_player getVariable ["AUR_Detach_Rope", false]) then {
-				// Player detached from rope. Don't prevent damage if we didn't find a position on the ground
 				if (count _intersectionASL == 0) then {
-					_player allowDamage true;
+					_player allowDamage true;		// Player detached from rope. Don't prevent damage if we didn't find a position on the ground
 				};	
 			};
 		};
@@ -620,17 +592,20 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			_player allowDamage false;
 			_player setPosASL _playerPreRappelPosition;
 		};
-		// once rappeling unit arrives at the bottom, this section will delete ropes from units inventory, and pile up those ropes at upper starting point
-		// _topRope = _player getVariable ["AUR_Rappel_Rope_Top", nil];
-		// if (!isNil "_topRope") then {
-			// if (((getPosASL _player select 2) + 1) < (_playerPreRappelPosition select 2)) then {
-				// _ropesRequired = ceil ((ropeLength _topRope - 3) / 10);
-				// for "_i" from 1 to _ropesRequired do {_player removeItem "AUR_Rappel_Rope"};
-				// _ropePile = "groundWeaponHolder" createVehicle _playerPreRappelPosition;
-				// _ropePile setPosASL _playerPreRappelPosition;
-				// _ropePile addItemCargoGlobal ["AUR_Rappel_Rope",_ropesRequired]; 
-			// };
-		// };
+		
+		if (AUR_ADVANCED_RAPPELING_ROPES) then {		// If activated via CBA, once rappeling unit arrives at the bottom, this section will delete ropes from units inventory, and pile up those ropes at upper starting point
+			_topRope = _player getVariable ["AUR_Rappel_Rope_Top", nil];
+			if (!isNil "_topRope") then {
+				if (((getPosASL _player select 2) + 1) < (_playerPreRappelPosition select 2)) then {
+					_ropesRequired = ceil ((ropeLength _topRope - 3) / 10);
+					for "_i" from 1 to _ropesRequired do {_player removeItem "AUR_Rappel_Rope"};
+					_ropePile = "groundWeaponHolder" createVehicle _playerPreRappelPosition;
+					_ropePile setPosASL _playerPreRappelPosition;
+					_ropePile addItemCargoGlobal ["AUR_Rappel_Rope",_ropesRequired]; 
+				};
+			};
+		};
+		
 		ropeDestroy _rope1;
 		deleteVehicle _anchor;
 		ropeDestroy _rope2;		
@@ -649,16 +624,13 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		};
 
 		sleep 2;
-		
 		_player allowDamage true;
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Enable_Rappelling_Animation_Global = {
 		params ["_player"];
 		[_player, true] remoteExec ["AUR_Enable_Rappelling_Animation", 0];
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Current_Weapon_Type_Selected = {
 		params ["_player"];
@@ -666,8 +638,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		if (currentWeapon _player == primaryWeapon _player) exitWith {"PRIMARY"};
 		if (currentWeapon _player == secondaryWeapon _player) exitWith {"SECONDARY"};
 		"OTHER";
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Enable_Rappelling_Animation = {
 		params ["_player", ["_globalExec", false]];
@@ -776,8 +747,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		
 		_player switchMove "";	
 		_player enableSimulation true;		
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Hint = {
 		params ["_msg", ["_isSuccess", true]];
@@ -790,22 +760,21 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		} else {
 			hint _msg;
 		};
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Hide_Object_Global = {
 		params ["_obj"];
 		if (_obj isKindOf "Land_Can_V2_F" || _obj isKindOf "B_static_AA_F") then {
 			hideObjectGlobal _obj;
 		};
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Add_Player_Actions = {
 		params ["_player"];
 		
 		[_player,
-		"Rappel Self",
+		// "Rappel Self",
+		format[localize "STR_AUR_RAPPEL_SELF"],
 		"\a3\ui_f\data\IGUI\Cfg\holdactions\holdAction_connect_ca.paa",
 		"\a3\ui_f\data\IGUI\Cfg\holdactions\holdAction_connect_ca.paa",
 		"[player] call AUR_Rappel_Action_Check",
@@ -819,15 +788,18 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		0,
 		false,
 		false] call BIS_fnc_holdActionAdd;
-		_player addAction ["Rappel AI Units", { 
+		// _player addAction ["Rappel AI Units", { 
+		_player addAction [format[localize "STR_AUR_RAPPEL_AI"], { 
 			[player] call AUR_Rappel_AI_Units_Action;
 		}, nil, 0, false, true, "", "[player] call AUR_Rappel_AI_Units_Action_Check"];
 
-		_player addAction ["Climb To Top", { 
+		// _player addAction ["Climb To Top", { 
+		_player addAction [format[localize "STR_AUR_CLIMB_TO"], { 
 			[player] call AUR_Rappel_Climb_To_Top_Action;
 		}, nil, 0, false, true, "", "[player] call AUR_Rappel_Climb_To_Top_Action_Check"];
 		
-		_player addAction ["Detach Rappel Device", { 
+		// _player addAction ["Detach Rappel Device", { 
+		_player addAction [format[localize "STR_AUR_RAPPEL_DETACH"], { 
 			[player] call AUR_Rappel_Detach_Action;
 		}, nil, 0, false, true, "", "[player] call AUR_Rappel_Detach_Action_Check"];
 		
@@ -835,14 +807,13 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			player setVariable ["AUR_Actions_Loaded", false];
 		}];
 		
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	if (!isDedicated) then {
 		[] spawn {
 			while {true} do {
 				if (!isNull player && isPlayer player) then {
-					if !(player getVariable ["AUR_Actions_Loaded", false] ) then {
+					if !(player getVariable ["AUR_Actions_Loaded", false]) then {
 						[player] call AUR_Add_Player_Actions;
 						player setVariable ["AUR_Actions_Loaded", true];
 					};
@@ -863,8 +834,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 				_params remoteExec [_functionName, _target];
 			};
 		};
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_RemoteExecServer = {
 		params ["_params", "_functionName", ["_isCall", false]];
@@ -877,15 +847,10 @@ AUR_Advanced_Urban_Rappelling_Install = {
 				_params remoteExec [_functionName, 2];
 			};
 		};
-	};
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-	if (isServer) then {
-		
-		// Adds support for exile network calls (Only used when running exile) //
-		
+	if (isServer) then {	// what is this bullshit? if if wasnt server, this section would never be executed? See line 13? // Adds support for exile network calls (Only used when running exile) 
 		AUR_SUPPORTED_REMOTEEXECSERVER_FUNCTIONS = ["AUR_Enable_Rappelling_Animation_Global", "AUR_Hide_Object_Global", "AUR_Play_Rappelling_Sounds_Global"];
-
 		ExileServer_AdvancedUrbanRappelling_network_AdvancedUrbanRappellingRemoteExecServer = {
 			params ["_sessionId", "_messageParameters", ["_isCall", false]];
 			_messageParameters params ["_params", "_functionName"];
@@ -899,7 +864,6 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		};
 		
 		AUR_SUPPORTED_REMOTEEXECCLIENT_FUNCTIONS = ["AUR_Hint"];
-		
 		ExileServer_AdvancedUrbanRappelling_network_AdvancedUrbanRappellingRemoteExecClient = {
 			params ["_sessionId", "_messageParameters"];
 			_messageParameters params ["_params", "_functionName", "_target", ["_isCall", false]];
@@ -914,9 +878,8 @@ AUR_Advanced_Urban_Rappelling_Install = {
 	};
 
 	diag_log "Advanced Urban Rappelling Loaded";
-};
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 publicVariable "AUR_Advanced_Urban_Rappelling_Install";
 [] call AUR_Advanced_Urban_Rappelling_Install;
-remoteExecCall ["AUR_Advanced_Urban_Rappelling_Install", -2,true];	// Install Advanced Urban Rappelling on all clients (plus JIP)
+remoteExecCall ["AUR_Advanced_Urban_Rappelling_Install", -2, true];	// Install Advanced Urban Rappelling on all clients (plus JIP)
