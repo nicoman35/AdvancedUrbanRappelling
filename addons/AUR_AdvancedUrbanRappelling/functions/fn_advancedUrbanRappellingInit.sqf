@@ -301,7 +301,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		if (count _rappelPoint > 0) then {
 			{
 				if (!(_x getVariable ["AUR_Is_Rappelling", false])) then {
-					[_x, _allRappelPoints select (_index mod 3), _rappelPoint select 1,60] spawn AUR_Rappel;
+					[_x, _allRappelPoints select (_index mod 3), _rappelPoint select 1, 60] spawn AUR_Rappel;
 					sleep 5;
 				};
 				_index = _index + 1;
@@ -346,15 +346,17 @@ AUR_Advanced_Urban_Rappelling_Install = {
 
 		_player setVariable ["AUR_Is_Rappelling", true, true];
 		private _playerPreRappelPosition = getPosASL _player;
-		private _playerStartPosition = _rappelPoint vectorAdd (_rappelDirection vectorMultiply 2);	// Start player rappelling 2m out from the rappel point
+		private _playerStartPosition = _rappelPoint vectorAdd (_rappelDirection vectorMultiply 2);			// Start player rappelling 2m out from the rappel point
 		_playerStartPosition set [2, getPosASL _player select 2];
 		_player setPosWorld _playerStartPosition;
-		private _anchor = createVehicle ["Land_Can_V2_F", _player, [], 0, "CAN_COLLIDE"];	// Create anchor for rope (at rappel point)
+		private _anchor = createVehicle ["Land_Can_V2_F", _player, [], 0, "CAN_COLLIDE"];					// Create anchor for rope (at rappel point)
 		hideObject _anchor;
 		_anchor enableSimulation false;
 		_anchor allowDamage false;
 		[[_anchor], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
-		private _rappelDevice = createVehicle ["B_static_AA_F", _player, [], 0, "CAN_COLLIDE"];	// Create rappel device (attached to player)
+		private _vehicle = "B_static_AA_F";
+		if (isClass(configfile >> "CfgPatches" >> "ace_main")) then {_vehicle = "ACE_O_T_SpottingScope"};	// ACE v3.12.6 compatibility
+		private _rappelDevice = createVehicle [_vehicle, _player, [], 0, "CAN_COLLIDE"];					// Create rappel device (attached to player)
 		hideObject _rappelDevice;
 		_rappelDevice setPosWorld _playerStartPosition;
 		_rappelDevice allowDamage false;
@@ -364,8 +366,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		private _rope2 = ropeCreate [_rappelDevice, [-0.15, 0, 0], _ropeLength - 1];
 		_rope2 allowDamage false;
 		private _rope1 = ropeCreate [_rappelDevice, [0,0.15,0], _anchor, [0, 0, 0], 1];
-		_rope1 allowDamage false;
-		
+		_rope1 allowDamage false;		
 		_anchor setPosWorld _rappelPoint;
 
 		_player setVariable ["AUR_Rappel_Rope_Top", _rope1];
@@ -761,7 +762,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 
 	AUR_Hide_Object_Global = {
 		params ["_obj"];
-		if (_obj isKindOf "Land_Can_V2_F" || _obj isKindOf "B_static_AA_F") then {
+		if (_obj isKindOf "Land_Can_V2_F" || _obj isKindOf "B_static_AA_F" || _obj isKindOf "ACE_O_T_SpottingScope") then {
 			hideObjectGlobal _obj;
 		};
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
