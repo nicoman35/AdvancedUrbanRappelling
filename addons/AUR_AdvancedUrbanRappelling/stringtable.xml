@@ -2,24 +2,56 @@
 <Project name="AUR_ADVANCED_RAPPELING">
     <Package name="AUR_ADVANCED">
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_NAME_V">
-            <Original>Advanced Urban Rappelling v1.0b</Original>
-            <German>Fortgeschrittenes Urbanes Abseilen v1.0b</German>
+            <Original>Advanced Urban Rappelling v1.0c</Original>
+            <German>Fortgeschrittenes Urbanes Abseilen v1.0c</German>
         </Key>
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_NAME">
             <Original>Advanced Urban Rappelling</Original>
             <German>Fortgeschrittenes Urbanes Abseilen</German>
+        </Key>
+		<Key ID="STR_AUR_NEW_BEHAVIOUR">
+            <Original>Harness And Rappelling Rope Needed</Original>
+            <German>Klettergeschirr Und Kletterseil Notwendig</German>
+        </Key>
+		<Key ID="STR_AUR_NEW_BEHAVIOUR_TIP">
+            <Original>Unchecking will restore original behaviour. Rappelling works without harness and rappelling rope. Benefit: Mod is needed to be installed server side only.</Original>
+            <German>Abwählen stellt Originalverhalten her. Abseilen funkitoniert ohne Klettergeschirr und Kletterseil. Vorteil: Mod muss nur Serverseitig instlliert werden.</German>
+        </Key>
+		<Key ID="STR_AUR_NEW_ACTION">
+            <Original>Harness Attachmet Takes Time</Original>
+            <German>Klettergeschirr Befestigen Kostet Zeit</German>
+        </Key>
+		<Key ID="STR_AUR_NEW_ACTION_TIP">
+            <Original>Rappelling action has a new interface. Time is needed to fasten harness at the top point.</Original>
+            <German>Neues Interface für die Abseil-aktion. Es wird Zeit benötigt zum Befestigen des Klettergeschirrs am oberen Punkt.</German>
+        </Key>
+		<Key ID="STR_AUR_NEW_ACTION_TIME">
+            <Original>Harness Attachmet Time</Original>
+            <German>Klettergeschirr Befestigungszeit</German>
+        </Key>
+		<Key ID="STR_AUR_NEW_ACTION_TIME_TIP">
+            <Original>Time in seconds needed to fasten harness at the top point.</Original>
+            <German>Zeit in Sekunden, die zum Befestigen des Klettergeschirrs am oberen Punkt benötigt wird.</German>
+        </Key>
+		<Key ID="STR_ADVANCED_RAPPELING_VELOCITY">
+            <Original>Rappelling Velocity</Original>
+            <German>Abseilgeschwindigkeit</German>
+        </Key>
+		<Key ID="STR_ADVANCED_RAPPELING_VELOCITY_TIP">
+            <Original>Rappelling velocity in meter/second.</Original>
+            <German>Abseilgeschwindigkeit in Meter/Sekunde.</German>
         </Key>
 		<Key ID="STR_AUR_ROPES_SETTING">
             <Original>Leave Ropes At Start</Original>
             <German>Seile Am Start Zurücklassen</German>
         </Key>
 		<Key ID="STR_AUR_ROPES_SETTING_TIP">
-            <Original>Used ropes are left back at starting point.</Original>
-            <German>Benutzte Seile werden am Startpunkt zurückgelassen.</German>
+            <Original>Used ropes are left back at starting point. Only relevant, if 'Harness And Rappelling Rope Needed' is checked.</Original>
+            <German>Benutzte Seile werden am Startpunkt zurückgelassen. Nur relevant, falls 'Klettergeschirr Und Kletterseil Notwendig' angeklickt ist.</German>
         </Key>
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_OVERVIEW">
-            <Original>Advanced Urban Rappelling v1.0b &lt;br /&gt;Rappel down anything that's more than 4-5m high. This includes buildings, cliffs, towers, etc. Everything works as long a you can walk to an edge.</Original>
-            <German>Fortgeschrittenes Urbanes Abseilen v1.0b &lt;br /&gt;Überall abseilen, wo der Höhenunterschied größer als 4-5m ist. Zum Beispiel Gebäude, Klippen, Türme, etc.. Funktioniert überall, wo an eine Kante gelangt werden kann.</German>
+            <Original>Advanced Urban Rappelling v1.0c &lt;br /&gt;Rappel down anything that's more than 4-5m high. This includes buildings, cliff, towers, etc. Everything works as long a you can walk to an edge.</Original>
+            <German>Fortgeschrittenes Urbanes Abseilen v1.0c &lt;br /&gt;Überall abseilen, wo der Höhenunterschied größer als 4-5m ist. Zum Beispiel Gebäude, Klippen, Türme, etc.. Funktioniert überall, wo an eine Kante gelangt werden kann.</German>
         </Key>
 		<Key ID="STR_AUR_RAPPEL_SELF">
             <Original>Rappel Self</Original>
@@ -52,6 +84,14 @@
 		<Key ID="STR_AUR_RAPPELING_ROPE_DESCR">
             <Original>10 m rappel rope - required to rappel down buildings. Use multiple for higher altitudes.</Original>
             <German>10 m Kletterseil - für urbanes Abseilen benötigt. Für größere Höhen, mehrere verwenden.</German>
+		</Key>
+		<Key ID="STR_COULD_NOT_RAPPEL_UNIT">
+            <Original>Could not rappel unit - move unit closer to edge!</Original>
+            <German>Konnte Einheit nicht abseilen - bewege Einheit näher zur Kante!</German>
+		</Key>
+		<Key ID="STR_COULD_NOT_ATTACH_ROPE">
+            <Original>Couldn't attach rope. Move closer to edge!</Original>
+            <German>Konnte Seil nicht befestigen. Näher zur Kante herangehen!</German>
 		</Key>
 	</Package>
 </Project>
