@@ -2,8 +2,8 @@
 <Project name="AUR_ADVANCED_RAPPELING">
     <Package name="AUR_ADVANCED">
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_NAME_V">
-            <Original>Advanced Urban Rappelling v1.0c</Original>
-            <German>Fortgeschrittenes Urbanes Abseilen v1.0c</German>
+            <Original>Advanced Urban Rappelling v1.0d</Original>
+            <German>Fortgeschrittenes Urbanes Abseilen v1.0d</German>
         </Key>
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_NAME">
             <Original>Advanced Urban Rappelling</Original>
@@ -50,8 +50,8 @@
             <German>Benutzte Seile werden am Startpunkt zurückgelassen. Nur relevant, falls 'Klettergeschirr Und Kletterseil Notwendig' angeklickt ist.</German>
         </Key>
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_OVERVIEW">
-            <Original>Advanced Urban Rappelling v1.0c &lt;br /&gt;Rappel down anything that's more than 4-5m high. This includes buildings, cliff, towers, etc. Everything works as long a you can walk to an edge.</Original>
-            <German>Fortgeschrittenes Urbanes Abseilen v1.0c &lt;br /&gt;Überall abseilen, wo der Höhenunterschied größer als 4-5m ist. Zum Beispiel Gebäude, Klippen, Türme, etc.. Funktioniert überall, wo an eine Kante gelangt werden kann.</German>
+            <Original>Advanced Urban Rappelling v1.0d &lt;br /&gt;Rappel down anything that's more than 4-5m high. This includes buildings, cliff, towers, etc. Everything works as long a you can walk to an edge.</Original>
+            <German>Fortgeschrittenes Urbanes Abseilen v1.0d &lt;br /&gt;Überall abseilen, wo der Höhenunterschied größer als 4-5m ist. Zum Beispiel Gebäude, Klippen, Türme, etc.. Funktioniert überall, wo an eine Kante gelangt werden kann.</German>
         </Key>
 		<Key ID="STR_AUR_RAPPEL_SELF">
             <Original>Rappel Self</Original>
