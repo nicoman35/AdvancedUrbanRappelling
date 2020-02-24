@@ -76,6 +76,8 @@ class CfgWeapons {
 	};
 };
 class Extended_PreInit_EventHandlers {
-	Test1 = call compile preprocessFileLineNumbers "\AUR_AdvancedUrbanRappelling\scripts\XEH_preInit.sqf"; // CBA_a3 integration
+	class AUR_AdvancedUrbanRappelling {
+		init = "call compile preprocessFileLineNumbers '\AUR_AdvancedUrbanRappelling\scripts\XEH_preInit.sqf'"; // CBA_a3 integration
+	};
 };
 #include "cfgAnimations.hpp"

@@ -211,7 +211,6 @@ AUR_Advanced_Urban_Rappelling_Install = {
 				[_player, _rappelPoint select 0, _rappelPoint select 1, _ropeLength] call AUR_Rappel;
 			} else {
 				[[format[localize "STR_COULD_NOT_ATTACH_ROPE"], false], "AUR_Hint", _player] call AUR_RemoteExec;
-				STR_COULD_NOT_ATTACH_ROPE
 			};
 		} else {
 			[[format[localize "STR_COULD_NOT_ATTACH_ROPE"], false], "AUR_Hint", _player] call AUR_RemoteExec;
@@ -243,7 +242,6 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		params ["_player"];
 		if !(_player getVariable ["AUR_Is_Rappelling", false]) exitWith {false};
 		private _topRope = player getVariable ["AUR_Rappel_Rope_Top", nil];
-		// private _topRope = _player getVariable ["AUR_Rappel_Rope_Top", nil];
 		if (isNil "_topRope") exitWith {false};
 		if (ropeLength _topRope > 1) exitWith {false};
 		true
@@ -319,7 +317,6 @@ AUR_Advanced_Urban_Rappelling_Install = {
 
 	AUR_Rappel_AI_Units_Action_Check = {
 		params ["_player"];
-		// if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && (!("AUR_Rappel_Gear" in (items _player)) || !("AUR_Rappel_Rope" in (items _player)))) exitWith {false};
 		if (leader _player != _player) exitWith {false};
 		private _hasAiUnits = false;
 		{
@@ -567,8 +564,8 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			};
 			if (!alive _player || vehicle _player != _player || ropeLength _rope2 <= 1 || _player getVariable ["AUR_Climb_To_Top", false] || _player getVariable ["AUR_Detach_Rope", false]) exitWith {};
 			sleep 0.01;
-		};		
-		if (ropeLength _rope2 > 1 && alive _player && vehicle _player == _player && not (_player getVariable ["AUR_Climb_To_Top",false])) then {		
+		};
+		if (ropeLength _rope2 > 1 && alive _player && vehicle _player == _player && not (_player getVariable ["AUR_Climb_To_Top", false])) then {		
 			_playerStartASLIntersect = getPosASL _player;
 			_playerEndASLIntersect = [_playerStartASLIntersect select 0, _playerStartASLIntersect select 1, (_playerStartASLIntersect select 2) - 5];
 			_surfaces = lineIntersectsSurfaces [_playerStartASLIntersect, _playerEndASLIntersect, _player, objNull, true, 10];
