@@ -2,8 +2,8 @@
 <Project name="AUR_ADVANCED_RAPPELING">
     <Package name="AUR_ADVANCED">
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_NAME_V">
-			<Original>Advanced Urban Rappelling v1.0e</Original>
-			<German>Fortgeschrittenes Urbanes Abseilen v1.0e</German>
+			<Original>Advanced Urban Rappelling v1.0f</Original>
+			<German>Fortgeschrittenes Urbanes Abseilen v1.0f</German>
 		</Key>
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_NAME">
 			<Original>Advanced Urban Rappelling</Original>
@@ -50,8 +50,8 @@
 			<German>Benutzte Seile werden am Startpunkt zurückgelassen. Nur relevant, falls 'Klettergeschirr Und Kletterseil Notwendig' angeklickt ist.</German>
 		</Key>
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_OVERVIEW">
-			<Original>Advanced Urban Rappelling v1.0e &lt;br /&gt;Rappel down anything that's more than 4-5m high. This includes buildings, cliff, towers, etc. Everything works as long a you can walk to an edge.</Original>
-			<German>Fortgeschrittenes Urbanes Abseilen v1.0e &lt;br /&gt;Überall abseilen, wo der Höhenunterschied größer als 4-5m ist. Zum Beispiel Gebäude, Klippen, Türme, etc.. Funktioniert überall, wo an eine Kante gelangt werden kann.</German>
+			<Original>Advanced Urban Rappelling v1.0f&lt;br /&gt;Rappel down anything that's more than 4-5m high. This includes buildings, cliffs, towers, etc. Everything works, as long a you can get close enough to an edge.</Original>
+			<German>Fortgeschrittenes Urbanes Abseilen v1.0f&lt;br /&gt;Überall abseilen, wo der Höhenunterschied größer als 4-5m ist. Zum Beispiel Gebäude, Klippen, Türme, etc.. Funktioniert überall, wo genügend nahe an eine Kante gelangt werden kann.</German>
 		</Key>
 		<Key ID="STR_AUR_RAPPEL_SELF">
 			<Original>Rappel Self</Original>
@@ -74,16 +74,48 @@
 			<German>Klettergeschirr</German>
 		</Key>
 		<Key ID="STR_AUR_RAPPELING_GEAR_DESCR">
-			<Original>Essential rappelling gear - including harness, for urban rappelling.</Original>
-			<German>Essenzielle Kletterausrüstung - beinhaltet Klettergeschirr, für urbanes Abseilen.</German>
+			<Original>Essential rappelling gear&lt;br /&gt;Needed for urban rappelling. Includes harness.</Original>
+			<German>Essenzielle Kletterausrüstung&lt;br /&gt;Für urbanes Abseilen benötigt. Beinhaltet Klettergeschirr.</German>
 		</Key>
-		<Key ID="STR_AUR_RAPPELING_ROPE">
+		<Key ID="STR_AUR_RAPPELING_ROPE_10">
 			<Original>Rappelling Rope 10 m</Original>
 			<German>Kletterseil 10 m</German>
 		</Key>
-		<Key ID="STR_AUR_RAPPELING_ROPE_DESCR">
-			<Original>10 m rappel rope - required to rappel down buildings. Use multiple for higher altitudes.</Original>
-			<German>10 m Kletterseil - für urbanes Abseilen benötigt. Für größere Höhen, mehrere verwenden.</German>
+		<Key ID="STR_AUR_RAPPELING_ROPE_DESCR_10">
+			<Original>10 m rappel rope. Needed for urban rappelling.&lt;br /&gt;Use multiple or combine with other ropes for higher altitudes.</Original>
+			<German>10 m Kletterseil. Benötigt für urbanes Abseilen.&lt;br /&gt;Zur Überwindung größerer Höhen, mehrere verwenden oder mit anderen Seilen kombinieren.</German>
+		</Key>
+		<Key ID="STR_AUR_RAPPELING_ROPE_20">
+			<Original>Rappelling Rope 20 m</Original>
+			<German>Kletterseil 20 m</German>
+		</Key>
+		<Key ID="STR_AUR_RAPPELING_ROPE_DESCR_20">
+			<Original>20 m rappel rope. Needed for urban rappelling.&lt;br /&gt;Use multiple or combine with other ropes for higher altitudes.</Original>
+			<German>20 m Kletterseil. Benötigt für urbanes Abseilen.&lt;br /&gt;Zur Überwindung größerer Höhen, mehrere verwenden oder mit anderen Seilen kombinieren.</German>
+		</Key>
+		<Key ID="STR_AUR_RAPPELING_ROPE_30">
+			<Original>Rappelling Rope 30 m</Original>
+			<German>Kletterseil 30 m</German>
+		</Key>
+		<Key ID="STR_AUR_RAPPELING_ROPE_DESCR_30">
+			<Original>30 m rappel rope. Needed for urban rappelling.&lt;br /&gt;Use multiple or combine with other ropes for higher altitudes.</Original>
+			<German>30 m Kletterseil. Benötigt für urbanes Abseilen.&lt;br /&gt;Zur Überwindung größerer Höhen, mehrere verwenden oder mit anderen Seilen kombinieren.</German>
+		</Key>
+		<Key ID="STR_AUR_RAPPELING_ROPE_50">
+			<Original>Rappelling Rope 50 m</Original>
+			<German>Kletterseil 50 m</German>
+		</Key>
+		<Key ID="STR_AUR_RAPPELING_ROPE_DESCR_50">
+			<Original>50 m rappel rope. Needed for urban rappelling.&lt;br /&gt;Use multiple or combine with other ropes for higher altitudes.</Original>
+			<German>50 m Kletterseil. Benötigt für urbanes Abseilen.&lt;br /&gt;Zur Überwindung größerer Höhen, mehrere verwenden oder mit anderen Seilen kombinieren.</German>
+		</Key>
+		<Key ID="STR_AUR_RAPPELING_ROPE_70">
+			<Original>Rappelling Rope 70 m</Original>
+			<German>Kletterseil 70 m</German>
+		</Key>
+		<Key ID="STR_AUR_RAPPELING_ROPE_DESCR_70">
+			<Original>70 m rappel rope. Needed for urban rappelling.&lt;br /&gt;Use multiple or combine with other ropes for higher altitudes.&lt;br /&gt;Caution! Max rappelling height is 100 m!</Original>
+			<German>70 m Kletterseil. Benötigt für urbanes Abseilen.&lt;br /&gt;Zur Überwindung größerer Höhen, mehrere verwenden oder mit anderen Seilen kombinieren.&lt;br /&gt;Achtung! Maximale Abseilhöhe 100 m!</German>
 		</Key>
 		<Key ID="STR_COULD_NOT_RAPPEL_UNIT">
 			<Original>Could not rappel unit - move unit closer to edge!</Original>

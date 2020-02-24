@@ -8,7 +8,11 @@ class CfgPatches {
 		requiredAddons[] 	= {"A3_Modules_F"};
 		weapons[] 			= {
 			"AUR_Rappel_Gear",
-			"AUR_Rappel_Rope"
+			"AUR_Rappel_Rope_10",
+			"AUR_Rappel_Rope_20",
+			"AUR_Rappel_Rope_30",
+			"AUR_Rappel_Rope_50",
+			"AUR_Rappel_Rope_70"
 		};
 	};
 };
@@ -63,15 +67,48 @@ class CfgWeapons {
 			mass = 8;
 		};
 	};
-	class AUR_Rappel_Rope: CBA_MiscItem {
+	class AUR_Rappel_Rope_10: CBA_MiscItem {
 		scope 				= 2;
-		displayName 		= $STR_AUR_RAPPELING_ROPE;
-		descriptionShort 	= $STR_AUR_RAPPELING_ROPE_DESCR;
+		displayName 		= $STR_AUR_RAPPELING_ROPE_10;
+		descriptionShort 	= $STR_AUR_RAPPELING_ROPE_DESCR_10;
 		author 				= "vurtual";
 		model				= "\A3\Structures_F_Heli\Items\Tools\Rope_01_F.p3d";
 		picture 			= "\AUR_AdvancedUrbanRappelling\ui\m_rope_ca";
 		class ItemInfo: CBA_MiscItem_ItemInfo {
 			mass = 5;
+		};
+	};
+	class AUR_Rappel_Rope_20: AUR_Rappel_Rope_10 {
+		scope 				= 2;
+		displayName 		= $STR_AUR_RAPPELING_ROPE_20;
+		descriptionShort 	= $STR_AUR_RAPPELING_ROPE_DESCR_20;
+		author 				= "Nico";
+		class ItemInfo: CBA_MiscItem_ItemInfo {
+			mass = 10;
+		};
+	};
+	class AUR_Rappel_Rope_30: AUR_Rappel_Rope_20 {
+		scope 				= 2;
+		displayName 		= $STR_AUR_RAPPELING_ROPE_30;
+		descriptionShort 	= $STR_AUR_RAPPELING_ROPE_DESCR_30;
+		class ItemInfo: CBA_MiscItem_ItemInfo {
+			mass = 15;
+		};
+	};
+	class AUR_Rappel_Rope_50: AUR_Rappel_Rope_20 {
+		scope 				= 2;
+		displayName 		= $STR_AUR_RAPPELING_ROPE_50;
+		descriptionShort 	= $STR_AUR_RAPPELING_ROPE_DESCR_50;
+		class ItemInfo: CBA_MiscItem_ItemInfo {
+			mass = 25;
+		};
+	};
+	class AUR_Rappel_Rope_70: AUR_Rappel_Rope_20 {
+		scope 				= 2;
+		displayName 		= $STR_AUR_RAPPELING_ROPE_70;
+		descriptionShort 	= $STR_AUR_RAPPELING_ROPE_DESCR_70;
+		class ItemInfo: CBA_MiscItem_ItemInfo {
+			mass = 35;
 		};
 	};
 };

@@ -197,6 +197,19 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		};
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+	AUR_Rappellng_Ropes = [				// [name of rope item, length in m]
+		["AUR_Rappel_Rope_10", 10],
+		["ACE_rope12", 12],
+		["ACE_rope15", 15],
+		["ACE_rope18", 18],
+		["AUR_Rappel_Rope_20", 20],
+		["ACE_rope27", 27],
+		["AUR_Rappel_Rope_30", 30],
+		["ACE_rope36", 36],
+		["AUR_Rappel_Rope_50", 50],
+		["AUR_Rappel_Rope_70", 70]
+	];
+
 	AUR_Rappel_Action = {
 		params ["_player"];	
 		if ([_player] call AUR_Rappel_Action_Check) then {
@@ -206,7 +219,13 @@ AUR_Advanced_Urban_Rappelling_Install = {
 				_player setVariable ["AUR_Rappelling_Last_Rappel_Point", _rappelPoint];
 				private _ropeLength = ([_player] call AUR_Get_Player_Height_Above_Ground) * 1.3;
 				if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED) then {
-					_ropeLength = (_ropeLength + 3) min (({_x == "AUR_Rappel_Rope"} count items player) * 10 + 3);
+					private _totalLength = 0;
+					{
+						private _rope = _x select 0;
+						private _length = _x select 1;
+						_totalLength = _totalLength + (({_x == _rope} count items player) * _length);
+					} forEach AUR_Rappellng_Ropes;
+					_ropeLength = (_ropeLength + 3) min (_totalLength + 3);
 				};
 				[_player, _rappelPoint select 0, _rappelPoint select 1, _ropeLength] call AUR_Rappel;
 			} else {
@@ -224,7 +243,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 
 	AUR_Rappel_Action_Check = {
 		params ["_player"];
-		if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && (!("AUR_Rappel_Gear" in (items _player)) || !("AUR_Rappel_Rope" in (items _player)))) exitWith {false};
+		if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && (!("AUR_Rappel_Gear" in (items _player)) || !([_player] call AUR_Rappel_Rope_Check))) exitWith {false};
 		if (_player getVariable ["AUR_Is_Rappelling", false]) exitWith {false};
 		if (vehicle _player != _player) exitWith {false};
 		if (([_player] call AUR_Get_Player_Height_Above_Ground) < 4) exitWith {false};
@@ -233,6 +252,13 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		true
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+	AUR_Rappel_Rope_Check = {
+		params ["_player"];
+		private _rope = false;
+		{if (_x select 0 in (items _player)) exitWith {_rope = true}} forEach AUR_Rappellng_Ropes;
+		_rope
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	
 	AUR_Rappel_Climb_To_Top_Action = {
 		params ["_player"];
 		_player setVariable ["AUR_Climb_To_Top", true];
@@ -287,7 +313,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 					abs ((_rappelPosition select 2) - ((getPosATL _x) select 2)) < 4 && 
 					not (_x getVariable ["AUR_Is_Rappelling",false]) && 
 					alive _x && vehicle _x == _x &&
-					(!AUR_ADVANCED_RAPPELING_ITEMS_NEEDED || (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && "AUR_Rappel_Gear" in (items _x) && "AUR_Rappel_Rope" in (items _x)))) then {
+					(!AUR_ADVANCED_RAPPELING_ITEMS_NEEDED || (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && "AUR_Rappel_Gear" in (items _x) && ([_x] call AUR_Rappel_Rope_Check)))) then {
 					_aiUnitsReady pushBack _x;
 				};
 			} forEach units _player;
@@ -457,7 +483,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		
 		private _walkingOnWallForce = [0, 0, 0];
 		private _lastAiJumpTime = diag_tickTime;
-		
+
 		while {true} do {
 			private _currentTime = diag_tickTime;
 			private _timeSinceLastUpdate = _currentTime - _lastTime;
@@ -559,7 +585,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 
 			_lastPosition = _newPosition;
 			_topRope = _player getVariable ["AUR_Rappel_Rope_Top", nil];
-			if (!isNil "_topRope" && AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && (({_x == "AUR_Rappel_Rope"} count items _player) < (((ropeLength _topRope) -5) / 10))) then {
+			if (!isNil "_topRope" && AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && (_ropeLength < ((ropeLength _topRope) -5))) then {
 					_player setVariable ["AUR_Detach_Rope", true];
 			};
 			if (!alive _player || vehicle _player != _player || ropeLength _rope2 <= 1 || _player getVariable ["AUR_Climb_To_Top", false] || _player getVariable ["AUR_Detach_Rope", false]) exitWith {};
@@ -597,15 +623,36 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			_player setPosASL _playerPreRappelPosition;
 		};
 		
-		if (AUR_ADVANCED_RAPPELING_REMOVE_ROPES && AUR_ADVANCED_RAPPELING_ITEMS_NEEDED) then {		// If activated via CBA, once rappeling unit arrives at the bottom, this section will delete ropes from units inventory, and pile up those ropes at upper starting point
+		if (AUR_ADVANCED_RAPPELING_REMOVE_ROPES && AUR_ADVANCED_RAPPELING_ITEMS_NEEDED) then {							// If activated via CBA, once rappeling unit arrives at the bottom, this section will delete ropes from units inventory, and pile up those ropes at upper starting point
 			_topRope = _player getVariable ["AUR_Rappel_Rope_Top", nil];
 			if (!isNil "_topRope") then {
 				if (((getPosASL _player select 2) + 1) < (_playerPreRappelPosition select 2)) then {
-					_ropesRequired = ceil ((ropeLength _topRope - 3) / 10);
-					for "_i" from 1 to _ropesRequired do {_player removeItem "AUR_Rappel_Rope"};
+					private _neededLength = ceil(ropeLength _topRope - 3);
+					if (_neededLength <= 0) exitWith {};	
 					_ropePile = "groundWeaponHolder" createVehicle _playerPreRappelPosition;
 					_ropePile setPosASL _playerPreRappelPosition;
-					_ropePile addItemCargoGlobal ["AUR_Rappel_Rope",_ropesRequired]; 
+					private _unitRopes = [];
+					private _ropeLengths = [];
+					{
+						private _rope = _x select 0;
+						private _length = _x select 1;
+						if (({_x == _rope} count items _player) > 0) then {
+							_unitRopes pushBack _rope;
+							_ropeLengths pushBack _length;
+						};
+					} forEach AUR_Rappellng_Ropes;																		// build arrays containing unit's rappelling ropes and respective lengths 
+					while {_neededLength > 0} do {
+						private _index = [_ropeLengths, _neededLength] call AUR_Get_Shortest_Required_Rope_Length;		// let's remove ropes somewhat intelligent
+						private _rope = _unitRopes select _index;
+						_player removeItem _rope;
+						_ropePile addItemCargoGlobal [_rope, 1];
+						private _length = _ropeLengths select _index;
+						_neededLength = _neededLength - _length;
+						if (!(_rope in (items _player))) then {
+							_unitRopes deleteAt _index;
+							_ropeLengths deleteAt _index;
+						};
+					};
 				};
 			};
 		};
@@ -629,6 +676,16 @@ AUR_Advanced_Urban_Rappelling_Install = {
 
 		sleep 2;
 		_player allowDamage true;
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+	AUR_Get_Shortest_Required_Rope_Length = { 			// get the shortest rope, that is required for the needed length 
+		params ["_ropeLengths", "_neededLength"];
+		private _index = (count _ropeLengths) - 1;
+		{
+			if (_x >= _neededLength) exitWith {_index = _forEachIndex};
+		} forEach _ropeLengths;	
+		// diag_log formatText ["%1%2%3%4%5%6%7%8", time, "s  (AUR_Get_Shortest_Required_Rope_Length) _neededLength: ", _neededLength, ", returned index: ", _index, " (lengths: ", _ropeLengths, ")"];
+		_index
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Enable_Rappelling_Animation_Global = {
