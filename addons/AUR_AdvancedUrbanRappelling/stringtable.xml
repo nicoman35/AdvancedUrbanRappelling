@@ -2,8 +2,8 @@
 <Project name="AUR_ADVANCED_RAPPELING">
     <Package name="AUR_ADVANCED">
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_NAME_V">
-			<Original>Advanced Urban Rappelling v1.0f</Original>
-			<German>Fortgeschrittenes Urbanes Abseilen v1.0f</German>
+			<Original>Advanced Urban Rappelling v1.0g</Original>
+			<German>Fortgeschrittenes Urbanes Abseilen v1.0g</German>
 		</Key>
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_NAME">
 			<Original>Advanced Urban Rappelling</Original>
@@ -50,8 +50,8 @@
 			<German>Benutzte Seile werden am Startpunkt zurückgelassen. Nur relevant, falls 'Klettergeschirr Und Kletterseil Notwendig' angeklickt ist.</German>
 		</Key>
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_OVERVIEW">
-			<Original>Advanced Urban Rappelling v1.0f&lt;br /&gt;Rappel down anything that's more than 4-5m high. This includes buildings, cliffs, towers, etc. Everything works, as long a you can get close enough to an edge.</Original>
-			<German>Fortgeschrittenes Urbanes Abseilen v1.0f&lt;br /&gt;Überall abseilen, wo der Höhenunterschied größer als 4-5m ist. Zum Beispiel Gebäude, Klippen, Türme, etc.. Funktioniert überall, wo genügend nahe an eine Kante gelangt werden kann.</German>
+			<Original>Advanced Urban Rappelling v1.0g&lt;br /&gt;Rappel down anything that's more than 4-5m high. This includes buildings, cliffs, towers, etc. Everything works, as long a you can get close enough to an edge.</Original>
+			<German>Fortgeschrittenes Urbanes Abseilen v1.0g&lt;br /&gt;Überall abseilen, wo der Höhenunterschied größer als 4-5m ist. Zum Beispiel Gebäude, Klippen, Türme, etc.. Funktioniert überall, wo genügend nahe an eine Kante gelangt werden kann.</German>
 		</Key>
 		<Key ID="STR_AUR_RAPPEL_SELF">
 			<Original>Rappel Self</Original>
@@ -124,6 +124,10 @@
 		<Key ID="STR_COULD_NOT_ATTACH_ROPE">
 			<Original>Couldn't attach rope. Move closer to edge!</Original>
 			<German>Konnte Seil nicht befestigen. Näher zur Kante herangehen!</German>
+		</Key>
+		<Key ID="STR_ROPE_TOO_SHORT">
+			<Original>Rope too short. Got only %1 m.</Original>
+			<German>Seil zu kurz. Habe nur %1 m.</German>
 		</Key>
 	</Package>
 </Project>
