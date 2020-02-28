@@ -41,13 +41,33 @@
 			<Original>Rappelling velocity in meter/second.</Original>
 			<German>Abseilgeschwindigkeit in Meter/Sekunde.</German>
 		</Key>
-		<Key ID="STR_AUR_ROPES_SETTING">
+		<!-- <Key ID="STR_AUR_ROPES_SETTING"> -->
+			<!-- <Original>Leave Ropes At Start</Original> -->
+			<!-- <German>Seile Am Start Zurücklassen</German> -->
+		<!-- </Key> -->
+		<!-- <Key ID="STR_AUR_ROPES_SETTING_TIP"> -->
+			<!-- <Original>Used ropes are left back at starting point. Only relevant, if 'Harness And Rappelling Rope Needed' is checked.</Original> -->
+			<!-- <German>Benutzte Seile werden am Startpunkt zurückgelassen. Nur relevant, falls 'Klettergeschirr Und Kletterseil Notwendig' angeklickt ist.</German> -->
+		<!-- </Key> -->
+		<Key ID="STR_AUR_ROPES_HANDLING">
+			<Original>Ropes Handling After Rappelling</Original>
+			<German>Seilhandhabung Nach Dem Abseilen</German>
+		</Key>
+		<Key ID="STR_AUR_ROPES_HANDLING_TIP">
+			<Original>In cosen 'Leave Ropes At Start' or 'Ropes Are Persistent', ropes of respective length will be removed from inventory, if 'Harness And Rappelling Rope Needed' is checked too.</Original>
+			<German>Falls 'Seile Am Start Zurücklassen' oder 'Seile Sind Persistent' ausgewählt, werden Seile entsprechender Länge aus dem Inventar entfernt, falls 'Klettergeschirr Und Kletterseil Notwendig' ebenfalls angewählt ist.</German>
+		</Key>
+		<Key ID="STR_AUR_ROPES_ALWAYS_INVENTORY">
+			<Original>Always Keep In Inventory</Original>
+			<German>Immer Im Inventar Behalten</German>
+		</Key>
+		<Key ID="STR_AUR_ROPES_LEAVE">
 			<Original>Leave Ropes At Start</Original>
 			<German>Seile Am Start Zurücklassen</German>
 		</Key>
-		<Key ID="STR_AUR_ROPES_SETTING_TIP">
-			<Original>Used ropes are left back at starting point. Only relevant, if 'Harness And Rappelling Rope Needed' is checked.</Original>
-			<German>Benutzte Seile werden am Startpunkt zurückgelassen. Nur relevant, falls 'Klettergeschirr Und Kletterseil Notwendig' angeklickt ist.</German>
+		<Key ID="STR_AUR_ROPES_PERSISTENT">
+			<Original>Ropes Are Persistent</Original>
+			<German>Seile Sind Persistent</German>
 		</Key>
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_OVERVIEW">
 			<Original>Advanced Urban Rappelling v1.0g&lt;br /&gt;Rappel down anything that's more than 4-5m high. This includes buildings, cliffs, towers, etc. Everything works, as long a you can get close enough to an edge.</Original>

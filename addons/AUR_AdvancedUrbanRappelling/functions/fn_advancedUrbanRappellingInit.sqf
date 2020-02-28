@@ -220,10 +220,9 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			if (count _rappelPoint > 0) then {
 				_player setVariable ["AUR_Rappelling_Last_Started_Time", diag_tickTime];
 				_player setVariable ["AUR_Rappelling_Last_Rappel_Point", _rappelPoint];				
-				diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel_Action) _rappelPoint ASL: ", (ASLtoAGL (_rappelPoint select 0)) select 2];
+				diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel_Action) _rappelPoint: ", _rappelPoint];
 				diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel_Action) player ASL to agl: ", [_player] call AUR_Get_Unit_Height_Above_Ground];
 				// diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel_Action) rappel point middle ASL: ", getPos (_rappelPoint select 0) select 2, ", player ASL to agl: ", [_player] call AUR_Get_Unit_Height_Above_Ground];
-				// private _ropeLength = ([_player] call AUR_Get_Unit_Height_Above_Ground) * 1.3;
 				private _ropeLength = ([_player] call AUR_Get_Unit_Height_Above_Ground) + ((([_player] call AUR_Get_Unit_Height_Above_Ground) / 10) min 5);  // get a length of required height plus a length of 10% or 5 meter, dependent on which is smaller
 				diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel_Action) _ropeLength wanted: ", _ropeLength];
 				if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED) then {
@@ -234,7 +233,6 @@ AUR_Advanced_Urban_Rappelling_Install = {
 						_totalLength = _totalLength + (({_x == _rope} count items player) * _length);
 						if (_totalLength >= _ropeLength) exitWith {};
 					} forEach AUR_Rappellng_Ropes;
-					// _ropeLength = (_ropeLength + 3) min (_totalLength + 3);
 					_ropeLength = _ropeLength min _totalLength;
 				};
 				[_player, _rappelPoint select 0, _rappelPoint select 1, _ropeLength] call AUR_Rappel;
@@ -283,15 +281,46 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		true
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+	AUR_Rappel_Detach_Action_Check = {
+		params ["_player"];
+		if !(_player getVariable ["AUR_Is_Rappelling", false]) exitWith {false};
+		true
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
 	AUR_Rappel_Detach_Action = {
 		params ["_player"];
 		_player setVariable ["AUR_Detach_Rope", true];
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-	AUR_Rappel_Detach_Action_Check = {
+	AUR_Rappel_Attach_Action_Check = {
 		params ["_player"];
-		if !(_player getVariable ["AUR_Is_Rappelling", false]) exitWith {false};
+		if (_player getVariable ["AUR_Is_Rappelling", false]) exitWith {false};
+		if (AUR_ADVANCED_RAPPELING_ROPES_HANDLING != 2) exitWith {false};
+		// _rappelItems = (getPos _player nearObjects 3) select {(_x isKindOf "Land_Can_V2_F")  || (_x isKindOf "Land_Camping_Light_F")};
+		_rappelItems = (getPos _player nearObjects 2) select {_x getVariable ["AUR_Rappel_Rope_Free", true]};		
+		diag_log formatText ["%1%2%3", time, "s  (AUR_Rappel_Attach_Action_Check) _rappelItems 1: ", _rappelItems];		
+		if (count _rappelItems == 0) exitWith {false};
+		{
+			private _partner = _x getVariable ["AUR_Rappel_Item_Partner", objNull];
+			private _rope = _x getVariable ["AUR_Rappel_Item_Rope", objNull];
+			if (!alive _partner || !alive _rope) then {deleteVehicle _x};
+		} forEach _rappelItems;
+		_rappelItems = (getPos _player nearObjects 2) select {_x getVariable ["AUR_Rappel_Rope_Free", true]};		
+		diag_log formatText ["%1%2%3", time, "s  (AUR_Rappel_Attach_Action_Check) _rappelItems 2: ", _rappelItems];		
+		if (count _rappelItems == 0) exitWith {false};
 		true
+	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+	AUR_Rappel_Attach_Action = {
+		params ["_player"];
+		_player setVariable ["AUR_Attach_Rope", true];
+		private _rappelItems = (getPos _player nearObjects 2) select {_x getVariable ["AUR_Rappel_Rope_Free", true]};
+		private _item = _rappelItems select 0;
+		private _partner = _item getVariable "AUR_Rappel_Item_Partner";
+		private _freeRope = _item getVariable "AUR_Rappel_Item_Rope";
+		private _ropeLength = ropeLength _freeRope;
+		ropeDestroy _freeRope;
+		[_player, _item, _partner, _ropeLength] call AUR_Rappel;
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Get_AI_Units_Ready_To_Rappel = {
@@ -379,9 +408,39 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		params ["_unit", "_rappelPoint", "_rappelDirection", "_ropeLength"];
 		_unit setVariable ["AUR_Is_Rappelling", true, true];
 		
-		diag_log formatText ["%1%2%3%4%5%6%7%8%9%10%11%12%13", time, "s  (AUR_Rappel START) unit ", _unit, ", _ropeLength: ", _ropeLength];
-								
+		diag_log formatText ["%1%2%3%4%5%6%7%8%9%10%11%12%13", time, "s  (AUR_Rappel START) unit ", _unit, ", _ropeLength: ", _ropeLength, ", _rappelPoint: ", _rappelPoint];
+
+		// private _unitPreRappelPosition = getPosASL _unit;
+		// private _unitStartPosition = _rappelPoint vectorAdd (_rappelDirection vectorMultiply 2);			// Start player rappelling 2m out from the rappel point
+		// _unitStartPosition set [2, getPosASL _unit select 2];
+		// _unit setPosWorld _unitStartPosition;
+		// private _anchor = createVehicle ["Land_Can_V2_F", _unit, [], 0, "CAN_COLLIDE"];					// Create anchor for rope (at rappel point)
+		// hideObject _anchor;
+		// _anchor enableSimulation false;
+		// _anchor allowDamage false;
+		// [[_anchor], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
+		// private _vehicle = "B_static_AA_F";
+		// if (isClass(configfile >> "CfgPatches" >> "ace_main")) then {_vehicle = "ACE_O_T_SpottingScope"};	// ACE v3.12.6 compatibility
+		// private _rappelDevice = createVehicle [_vehicle, _unit, [], 0, "CAN_COLLIDE"];					// Create rappel device (attached to player)
+		// hideObject _rappelDevice;
+		// _rappelDevice setPosWorld _unitStartPosition;
+		// _rappelDevice allowDamage false;
+		// [[_rappelDevice], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
+		// [[_unit, _rappelDevice, _anchor], "AUR_Play_Rappelling_Sounds_Global"] call AUR_RemoteExecServer;
+		// private _rope2 = ropeCreate [_rappelDevice, [-0.15, 0, 0], _ropeLength - 1];
+		// _rope2 allowDamage false;
+		// private _rope1 = ropeCreate [_rappelDevice, [0,0.15,0], _anchor, [0, 0, 0], 1];
+		// _rope1 allowDamage false;		
+		// _anchor setPosWorld _rappelPoint;
+		
+		
+		
+		
+		
+		
+		
 		private _unitPreRappelPosition = getPosASL _unit;
+		if (typeName _rappelPoint != "ARRAY") then {_unitPreRappelPosition = getPosASL _unit;
 		private _unitStartPosition = _rappelPoint vectorAdd (_rappelDirection vectorMultiply 2);			// Start player rappelling 2m out from the rappel point
 		_unitStartPosition set [2, getPosASL _unit select 2];
 		_unit setPosWorld _unitStartPosition;
@@ -397,13 +456,77 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		_rappelDevice setPosWorld _unitStartPosition;
 		_rappelDevice allowDamage false;
 		[[_rappelDevice], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
-		
 		[[_unit, _rappelDevice, _anchor], "AUR_Play_Rappelling_Sounds_Global"] call AUR_RemoteExecServer;
 		private _rope2 = ropeCreate [_rappelDevice, [-0.15, 0, 0], _ropeLength - 1];
 		_rope2 allowDamage false;
 		private _rope1 = ropeCreate [_rappelDevice, [0,0.15,0], _anchor, [0, 0, 0], 1];
 		_rope1 allowDamage false;		
 		_anchor setPosWorld _rappelPoint;
+			
+			
+			
+			
+			
+			
+			
+			
+		if (typeName _rappelPoint == "ARRAY") then {
+			private _unitPreRappelPosition = getPosASL _unit;
+			private _unitStartPosition = _rappelPoint vectorAdd (_rappelDirection vectorMultiply 2);			// Start player rappelling 2m out from the rappel point
+			_unitStartPosition set [2, getPosASL _unit select 2];
+			_unit setPosWorld _unitStartPosition;
+			private _anchor = createVehicle ["Land_Can_V2_F", _unit, [], 0, "CAN_COLLIDE"];					// Create anchor for rope (at rappel point)
+			hideObject _anchor;
+			_anchor enableSimulation false;
+			_anchor allowDamage false;
+			[[_anchor], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
+			private _vehicle = "B_static_AA_F";
+			if (isClass(configfile >> "CfgPatches" >> "ace_main")) then {_vehicle = "ACE_O_T_SpottingScope"};	// ACE v3.12.6 compatibility
+			private _rappelDevice = createVehicle [_vehicle, _unit, [], 0, "CAN_COLLIDE"];					// Create rappel device (attached to player)
+			hideObject _rappelDevice;
+			_rappelDevice setPosWorld _unitStartPosition;
+			_rappelDevice allowDamage false;
+			[[_rappelDevice], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
+			[[_unit, _rappelDevice, _anchor], "AUR_Play_Rappelling_Sounds_Global"] call AUR_RemoteExecServer;
+			private _rope2 = ropeCreate [_rappelDevice, [-0.15, 0, 0], _ropeLength - 1];
+			_rope2 allowDamage false;
+			private _rope1 = ropeCreate [_rappelDevice, [0,0.15,0], _anchor, [0, 0, 0], 1];
+			_rope1 allowDamage false;		
+			_anchor setPosWorld _rappelPoint;
+		} else {
+			private _unitPreRappelPosition = getPosASL _unit;
+			private _unitStartPosition = _rappelPoint vectorAdd (_rappelDirection vectorMultiply 2);			// Start player rappelling 2m out from the rappel point
+			_unitStartPosition set [2, getPosASL _unit select 2];
+			_unit setPosWorld _unitStartPosition;
+			private _anchor = createVehicle ["Land_Can_V2_F", _unit, [], 0, "CAN_COLLIDE"];					// Create anchor for rope (at rappel point)
+			hideObject _anchor;
+			_anchor enableSimulation false;
+			_anchor allowDamage false;
+			[[_anchor], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
+			private _vehicle = "B_static_AA_F";
+			if (isClass(configfile >> "CfgPatches" >> "ace_main")) then {_vehicle = "ACE_O_T_SpottingScope"};	// ACE v3.12.6 compatibility
+			private _rappelDevice = createVehicle [_vehicle, _unit, [], 0, "CAN_COLLIDE"];					// Create rappel device (attached to player)
+			hideObject _rappelDevice;
+			_rappelDevice setPosWorld _unitStartPosition;
+			_rappelDevice allowDamage false;
+			[[_rappelDevice], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
+			[[_unit, _rappelDevice, _anchor], "AUR_Play_Rappelling_Sounds_Global"] call AUR_RemoteExecServer;
+			private _rope2 = ropeCreate [_rappelDevice, [-0.15, 0, 0], _ropeLength - 1];
+			_rope2 allowDamage false;
+			private _rope1 = ropeCreate [_rappelDevice, [0,0.15,0], _anchor, [0, 0, 0], 1];
+			_rope1 allowDamage false;		
+			_anchor setPosWorld _rappelPoint;
+		};
+		
+		
+		
+		
+		
+		
+		_anchor setVariable ["AUR_Rappel_Rope_Free", false];					// set anchor busy; only usefull in case of persistent ropes; only one climber allowed per rope
+		// _anchor setVariable ["AUR_Rappel_Item_Partner", _rappelDevice]			// memory anchor 'partner'
+		// _rappelDevice setVariable ["AUR_Rappel_Rope_Free", false];				// set rappel device busy; only usefull in case of persistent ropes; only one climber allowed per rope
+		// _rappelDevice setVariable ["AUR_Rappel_Item_Partner", _anchor];			// memory rappel device 'partner'
 
 		_unit setVariable ["AUR_Rappel_Rope_Top", _rope1];
 		_unit setVariable ["AUR_Rappel_Rope_Bottom", _rope2];
@@ -502,7 +625,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 				if (_sinkRate > 6) then {_sinkRate = 6};																					// do not allow super human velocities
 				_sinkRate = _sinkRate + _randomSpeedFactor;
 				// while {!isNil "_topRope" && (ropeLength _topRope) + 3 < _ropeLength && (ropeLength _bottomRope) > 3} do {					// rappel down AI unit, until rope end or less than 3 m above bottom
-				while {!isNil "_topRope" && (ropeLength _topRope) + 3 < _ropeLength && (ropeLength _bottomRope) > 3 && (position _unit select 2) > 2} do {					// rappel down AI unit, until rope end or less than 3 m above bottom
+				while {!isNil "_topRope" && (ropeLength _topRope) + 3 < _ropeLength && (ropeLength _bottomRope) > 3 && (getPosATL _unit select 2) > 2} do {					// rappel down AI unit, until rope end or less than 3 m above bottom
 					ropeUnwind [_topRope, _sinkRate, ((ropeLength _topRope) + (AUR_ADVANCED_RAPPELING_VELOCITY / 10)) min _ropeLength];
 					// diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel) _unit: ", _unit, ", length topRope: ", ropeLength _topRope, ", length bottomRope: ", ropeLength _bottomRope];
 					if (!isNil "_bottomRope") then {
@@ -673,57 +796,8 @@ AUR_Advanced_Urban_Rappelling_Install = {
 				};	
 			};
 		};
-		
-		if (_unit getVariable ["AUR_Climb_To_Top", false]) then {
-			ropeDestroy _rope1;
-			deleteVehicle _anchor;
-			ropeDestroy _rope2;
-			deleteVehicle _rappelDevice;
-			// _unit allowDamage false;
-			// _unit setPosASL _unitPreRappelPosition;
-			_unit setPosASL [getPosASL _unit select 0, getPosASL _unit select 1, (getPosASL _unit select 2) + 1];
-			if (call AUR_Has_EM_Animations_Installed) then {			
-				[_unit, true] call babe_em_fnc_detect;
-				// sleep 3;
-				// ropeDestroy _rope1;
-				// deleteVehicle _anchor;
-				// ropeDestroy _rope2;
-				// deleteVehicle _rappelDevice;
-			} else {
-				_unit allowDamage false;
-				_unit setPosASL _unitPreRappelPosition;
-				sleep 0.1;
-				_unit allowDamage true;
-			};
-		} else {
-			detach _rappelDevice;
-			ropeDestroy _rope1;
-			ropeDestroy _rope2;
-			_rappelDevice ropeDetach _rope1;
-			// sleep 5;
-			deleteVehicle _rappelDevice;
-			// deleteVehicle _rappelDevice;
-			_rope1 = ropeCreate [_anchor, [0,0,-0.1], position _unit, _ropeLength];
-			// _rope1 = ropeCreate [_rappelDevice, [0,0.15,0], _anchor, [0, 0, -0.1], _ropeLength];
-			// _rope1 = ropeCreate [_anchor, [0, 0, -0.1], _rappelDevice, [0,0.15,0], _ropeLength];
-			diag_log formatText ["%1%2%3%4%5%6%7%8%9%10%11%12%13", time, "s  (AUR_Rappel END) unit ", _unit, ", created new rope, _ropeLength: ", _ropeLength];
-			// [_rappelDevice] ropeAttachTo _rope1;
-			
-			
-		};
-		
-		// if (_unit getVariable ["AUR_Climb_To_Top", false]) then {
-			// ropeDestroy _rope1;
-			// deleteVehicle _anchor;
-			// ropeDestroy _rope2;
-			// deleteVehicle _rappelDevice;
-		// } else {
-			// ropeDestroy _rope2;
-			// _rappelDevice ropeDetach _rope1;
-			// detach _rappelDevice;
-		// };
-		
-		if (AUR_ADVANCED_RAPPELING_REMOVE_ROPES && AUR_ADVANCED_RAPPELING_ITEMS_NEEDED) then {							// If activated via CBA, once rappeling unit arrives at the bottom, this section will delete ropes from units inventory, and pile up those ropes at upper starting point
+
+		if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && (AUR_ADVANCED_RAPPELING_ROPES_HANDLING == 1 || AUR_ADVANCED_RAPPELING_ROPES_HANDLING == 2)) then {							// If activated via CBA, once rappeling unit arrives at the bottom, this section will delete ropes from units inventory, and pile up those ropes at upper starting point
 			_topRope = _unit getVariable ["AUR_Rappel_Rope_Top", nil];
 			if (!isNil "_topRope") then {
 				if (((getPosASL _unit select 2) + 1) < (_unitPreRappelPosition select 2)) then {
@@ -757,11 +831,44 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			};
 		};
 		
-		// ropeDestroy _rope1;
+		ropeDestroy _rope1;
 		// deleteVehicle _anchor;
-		// ropeDestroy _rope2;
-		// deleteVehicle _rappelDevice;
-		
+		ropeDestroy _rope2;
+		deleteVehicle _rappelDevice;
+
+		switch true do {
+			case (_unit getVariable ["AUR_Climb_To_Top", false]): {
+				_unit allowDamage false;
+				_unit setPosASL _unitPreRappelPosition;
+				// if (call AUR_Has_EM_Animations_Installed) then {			
+					// _unit setPosASL [getPosASL _unit select 0, getPosASL _unit select 1, (getPosASL _unit select 2) + 1];
+					// _unit setVariable ["AUR_Is_Rappelling", nil, true];
+					// diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel) _unit: ", _unit, " tries to climb to top, waiting for anmation loop"];
+					// sleep 0.5;
+					// [_unit, true] call babe_em_fnc_detect;
+				// } else {
+					// _unit allowDamage false;
+					// _unit setPosASL _unitPreRappelPosition;
+				// };
+			};
+			case (AUR_ADVANCED_RAPPELING_ROPES_HANDLING == 2): {																				// let's try to leave a persistant rope hanging
+				private _rappelDevice = createVehicle ["Land_Camping_Light_F", (getPosASL _unit), [], 0, "CAN_COLLIDE"];					// create rappel device (begin of rope, has to be a TRANSPORT physics object, see https://community.bistudio.com/wiki/ropeCreate/transport)
+				hideObject _rappelDevice;																									// hide object
+				// _rappelDevice setPosWorld getPosASL _unit;																					// set the device to position of unit, on the surface player is standing
+				_rappelDevice setPosATL [getPos _unit select 0, getPos _unit select 1, 0];													// set the device to position of unit, on the surface unit is standing
+				_rappelDevice allowDamage false;																							// do not allow damage
+				[[_rappelDevice], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;														// hide our device for all players on a multiplayer game
+				private _rope1 = ropeCreate [_rappelDevice, [0, 0, 0], _anchor, [0, 0, 0], _ropeLength];									// now, create the rope from the on the ground lying device up to the anchor, which is stil attached to the original rappelling position. Thus the illusion of a free hanging rope is created.
+				_rope1 allowDamage false;																									// do not allow damage to rope
+				_anchor setVariable ["AUR_Rappel_Rope_Free", true];						// set anchor busy in case of persistent ropes; only one climber allowed per rope
+				_anchor setVariable ["AUR_Rappel_Item_Partner", _rappelDevice]			// memory anchor 'partner'
+				_anchor setVariable ["AUR_Rappel_Item_Rope", _rope1]					// memory anchor 'rope'
+				_rappelDevice setVariable ["AUR_Rappel_Rope_Free", true]};				// set rappel device busy in case of persistent ropes; only one climber allowed per rope
+				_rappelDevice setVariable ["AUR_Rappel_Item_Partner", _anchor];			// memory rappel device 'partner'
+				_rappelDevice setVariable ["AUR_Rappel_Item_Rope", _rope1];				// memory rappel device 'rope'
+			};
+		};
+
 		_unit setVariable ["AUR_Is_Rappelling", nil, true];
 		_unit setVariable ["AUR_Rappel_Rope_Top", nil];
 		_unit setVariable ["AUR_Rappel_Rope_Bottom", nil];
@@ -801,111 +908,114 @@ AUR_Advanced_Urban_Rappelling_Install = {
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Enable_Rappelling_Animation = {
-		params ["_player", ["_globalExec", false]];
-		if (local _player && _globalExec) exitWith {};
-		if (local _player && !_globalExec) then {
-			[[_player], "AUR_Enable_Rappelling_Animation_Global"] call AUR_RemoteExecServer;
+		params ["_unit", ["_globalExec", false]];
+		if (local _unit && _globalExec) exitWith {};
+		if (local _unit && !_globalExec) then {
+			[[_unit], "AUR_Enable_Rappelling_Animation_Global"] call AUR_RemoteExecServer;
 		};
-		// if (_player != player) then {
-			// _player enableSimulation false;
+		// if (_unit != player) then {
+			// _unit enableSimulation false;
 		// };
 		if (call AUR_Has_Addon_Animations_Installed) then {		
-			if ([_player] call AUR_Current_Weapon_Type_Selected == "HANDGUN") then {
-				if (local _player) then {
-					_player switchMove "AUR_01_Idle_Pistol";
-					_player setVariable ["AUR_Animation_Move", "AUR_01_Idle_Pistol_No_Actions", true];
+			if ([_unit] call AUR_Current_Weapon_Type_Selected == "HANDGUN") then {
+				if (local _unit) then {
+					_unit switchMove "AUR_01_Idle_Pistol";
+					_unit setVariable ["AUR_Animation_Move", "AUR_01_Idle_Pistol_No_Actions", true];
 				} else {
-					_player setVariable ["AUR_Animation_Move", "AUR_01_Idle_Pistol_No_Actions"];			
+					_unit setVariable ["AUR_Animation_Move", "AUR_01_Idle_Pistol_No_Actions"];			
 				};
 			} else {
-				if (local _player) then {
-					_player switchMove "AUR_01_Idle";
-					_player setVariable ["AUR_Animation_Move", "AUR_01_Idle_No_Actions", true];
+				if (local _unit) then {
+					_unit switchMove "AUR_01_Idle";
+					_unit setVariable ["AUR_Animation_Move", "AUR_01_Idle_No_Actions", true];
 				} else {
-					_player setVariable ["AUR_Animation_Move", "AUR_01_Idle_No_Actions"];
+					_unit setVariable ["AUR_Animation_Move", "AUR_01_Idle_No_Actions"];
 				};
 			};
-			if !(local _player) then {		// Temp work around to avoid seeing other player as standing		
-				_player switchMove "AUR_01_Idle_No_Actions";
+			if !(local _unit) then {		// Temp work around to avoid seeing other player as standing		
+				_unit switchMove "AUR_01_Idle_No_Actions";
 				sleep 1;
-				_player switchMove "AUR_01_Idle_No_Actions";
+				_unit switchMove "AUR_01_Idle_No_Actions";
 				sleep 1;
-				_player switchMove "AUR_01_Idle_No_Actions";
+				_unit switchMove "AUR_01_Idle_No_Actions";
 				sleep 1;
-				_player switchMove "AUR_01_Idle_No_Actions";
+				_unit switchMove "AUR_01_Idle_No_Actions";
 			};
 		} else {
-			if (local _player) then {
-				_player switchMove "HubSittingChairC_idle1";
-				_player setVariable ["AUR_Animation_Move", "HubSittingChairC_idle1", true];
+			if (local _unit) then {
+				_unit switchMove "HubSittingChairC_idle1";
+				_unit setVariable ["AUR_Animation_Move", "HubSittingChairC_idle1", true];
 			} else {
-				_player setVariable ["AUR_Animation_Move", "HubSittingChairC_idle1"];		
+				_unit setVariable ["AUR_Animation_Move", "HubSittingChairC_idle1"];		
 			};
 		};
-		// diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Enable_Rappelling_Animation) local _player: ", local _player];
+		// diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Enable_Rappelling_Animation) local _unit: ", local _unit];
 		private _animationEventHandler = -1;
-		if (local _player) then {
-			_animationEventHandler = _player addEventHandler ["AnimChanged", {
-				params ["_player", "_animation"];
+		if (local _unit) then {
+			_animationEventHandler = _unit addEventHandler ["AnimChanged", {
+				params ["_unit", "_animation"];
 				if (call AUR_Has_Addon_Animations_Installed) then {
 					if ((toLower _animation) find "aur_" < 0) then {
-						if ([_player] call AUR_Current_Weapon_Type_Selected == "HANDGUN") then {
-							_player switchMove "AUR_01_Aim_Pistol";
-							_player setVariable ["AUR_Animation_Move", "AUR_01_Aim_Pistol_No_Actions", true];
+						if ([_unit] call AUR_Current_Weapon_Type_Selected == "HANDGUN") then {
+							_unit switchMove "AUR_01_Aim_Pistol";
+							_unit setVariable ["AUR_Animation_Move", "AUR_01_Aim_Pistol_No_Actions", true];
 						} else {
-							_player switchMove "AUR_01_Aim";
-							_player setVariable ["AUR_Animation_Move", "AUR_01_Aim_No_Actions", true];
+							_unit switchMove "AUR_01_Aim";
+							_unit setVariable ["AUR_Animation_Move", "AUR_01_Aim_No_Actions", true];
 						};
 					} else {
 						if (toLower _animation == "aur_01_aim") then {
-							_player setVariable ["AUR_Animation_Move", "AUR_01_Aim_No_Actions", true];
+							_unit setVariable ["AUR_Animation_Move", "AUR_01_Aim_No_Actions", true];
 						};
 						if (toLower _animation == "aur_01_idle") then {
-							_player setVariable ["AUR_Animation_Move", "AUR_01_Idle_No_Actions", true];
+							_unit setVariable ["AUR_Animation_Move", "AUR_01_Idle_No_Actions", true];
 						};
 						if (toLower _animation == "aur_01_aim_pistol") then {
-							_player setVariable ["AUR_Animation_Move", "AUR_01_Aim_Pistol_No_Actions", true];
+							_unit setVariable ["AUR_Animation_Move", "AUR_01_Aim_Pistol_No_Actions", true];
 						};
 						if (toLower _animation == "aur_01_idle_pistol") then {
-							_player setVariable ["AUR_Animation_Move", "AUR_01_Idle_Pistol_No_Actions", true];
+							_unit setVariable ["AUR_Animation_Move", "AUR_01_Idle_Pistol_No_Actions", true];
 						};
 					};
 				} else {
-					_player switchMove "HubSittingChairC_idle1";
-					_player setVariable ["AUR_Animation_Move", "HubSittingChairC_idle1", true];
+					_unit switchMove "HubSittingChairC_idle1";
+					_unit setVariable ["AUR_Animation_Move", "HubSittingChairC_idle1", true];
 				};
 			}];
 		};
 		
-		if (!local _player) then {
-			[_player] spawn {
-				params ["_player"];
-				while {_player getVariable ["AUR_Is_Rappelling", false]} do {
-					private _currentState = toLower animationState _player;
-					private _newState = toLower (_player getVariable ["AUR_Animation_Move", ""]);
+		if (!local _unit) then {
+			[_unit] spawn {
+				params ["_unit"];
+				while {_unit getVariable ["AUR_Is_Rappelling", false]} do {
+					private _currentState = toLower animationState _unit;
+					private _newState = toLower (_unit getVariable ["AUR_Animation_Move", ""]);
 					if !(call AUR_Has_Addon_Animations_Installed) then {
 						_newState = "HubSittingChairC_idle1";
 					};
 					if (_currentState != _newState) then {
-						_player switchMove _newState;
-						_player switchGesture "";
+						_unit switchMove _newState;
+						_unit switchGesture "";
 						sleep 1;
-						_player switchMove _newState;
-						_player switchGesture "";
+						_unit switchMove _newState;
+						_unit switchGesture "";
 					};
 					sleep 0.1;
 				};			
 			};
 		};
 		
-		waitUntil {!(_player getVariable ["AUR_Is_Rappelling", false])};
+		waitUntil {!(_unit getVariable ["AUR_Is_Rappelling", false])};
 		
 		if (_animationEventHandler != -1) then {
-			_player removeEventHandler ["AnimChanged", _animationEventHandler];
+			_unit removeEventHandler ["AnimChanged", _animationEventHandler];
 		};
 		
-		_player switchMove "";	
-		_player enableSimulation true;		
+		_unit switchMove "";	
+		// _unit enableSimulation true;	
+
+		diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Enable_Rappelling_Animation) _unit: ", _unit, " leaves anmation loop"];
+
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Hint = {
@@ -937,9 +1047,20 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		_player addAction [format[localize "STR_AUR_CLIMB_TO"], { 
 			[player] call AUR_Rappel_Climb_To_Top_Action;
 		}, nil, 0, false, true, "", "[player] call AUR_Rappel_Climb_To_Top_Action_Check"];
+		
 		_player addAction [format[localize "STR_AUR_RAPPEL_DETACH"], { 
 			[player] call AUR_Rappel_Detach_Action;
 		}, nil, 0, false, true, "", "[player] call AUR_Rappel_Detach_Action_Check"];
+		
+		
+		
+		
+		_player addAction [format[localize "STR_AUR_RAPPEL_ATTACH"], { 
+			[player] call AUR_Rappel_Attach_Action;
+		}, nil, 0, false, true, "", "[player] call AUR_Rappel_Attach_Action_Check"];
+		
+		
+		
 		_player addEventHandler ["Respawn", {
 			player setVariable ["AUR_Actions_Loaded", false];
 		}];	
