@@ -18,8 +18,12 @@
 			<German>Abwählen stellt Originalverhalten her. Abseilen funkitoniert ohne Klettergeschirr und Kletterseil. Vorteil: Mod muss nur Serverseitig instlliert werden.</German>
 		</Key>
 		<Key ID="STR_AUR_NEW_ACTION">
-			<Original>Harness Attachmet Takes Time</Original>
-			<German>Klettergeschirr Befestigen Kostet Zeit</German>
+			<Original>Rope Actions Take Time</Original>
+			<German>Seilaktionen Kosten Zeit</German>
+		</Key>
+		<Key ID="STR_AUR_DETACH_ROPE">
+			<Original>Detach Rope</Original>
+			<German>Seil Lösen</German>
 		</Key>
 		<Key ID="STR_AUR_NEW_ACTION_TIP">
 			<Original>Rappelling action has a new interface. Time is needed to fasten harness at the top point.</Original>
@@ -81,12 +85,16 @@
 			<Original>Rappel AI Units</Original>
 			<German>AI Einheiten Abseilen</German>
 		</Key>
+		<Key ID="STR_AUR_RAPPEL_ATTACH">
+			<Original>Attach To Rappelling Rope</Original>
+			<German>Am Kletterseil Befestigen</German>
+		</Key>
 		<Key ID="STR_AUR_CLIMB_TO">
 			<Original>Climb To Top</Original>
 			<German>Hochklettern</German>
 		</Key>
 		<Key ID="STR_AUR_RAPPEL_DETACH">
-			<Original>Detach Rappel Device</Original>
+			<Original>Detach Harness</Original>
 			<German>Klettergeschirr Loslösen</German>
 		</Key>
 		<Key ID="STR_AUR_RAPPELING_GEAR">
@@ -148,6 +156,10 @@
 		<Key ID="STR_ROPE_TOO_SHORT">
 			<Original>Rope too short. Got only %1 m.</Original>
 			<German>Seil zu kurz. Habe nur %1 m.</German>
+		</Key>
+		<Key ID="STR_AUR_SOME_ROPES">
+			<Original>No room for all ropes in inventory, surplus laid on ground.</Original>
+			<German>Kein Platz im Inventar für alle Seile, überschüssige auf den Boden gelegt.</German>
 		</Key>
 	</Package>
 </Project>
