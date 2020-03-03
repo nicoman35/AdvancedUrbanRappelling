@@ -3,11 +3,10 @@ class CfgPatches {
 		author 				= "duda123";
 		name 				= "Advanced Urban Rappelling";
 		url 				= "https://github.com/sethduda/AdvancedUrbanRappelling";
-		// units[] 			= {
-			// "AUR_AdvancedUrbanRappelling",
-			// "AUR_RopeSmallWeight"
-		// };
-		units[] 			= {"AUR_AdvancedUrbanRappelling"};
+		units[] 			= {
+			"AUR_AdvancedUrbanRappelling",
+			"AUR_RopeSmallWeight"
+		};
 		requiredVersion 	= 1.0;
 		requiredAddons[] 	= {"A3_Modules_F"};
 		weapons[] 			= {
@@ -122,19 +121,13 @@ class Extended_PreInit_EventHandlers {
 	};
 };
 
-// class CfgVehicles {
-	// // class All;
-	// // class Strategic;
-	// class Land;
-	// class LandVehicle: Land	{};
-	// class Tank: LandVehicle	{};
-	// class Tank_F: Tank {};
-	// class AUR_RopeSmallWeight: Tank_F {
-		// simulation						= "tankX";
-		// scope							= 2;
-		// // scopeCurator					= "2";
-		// model							= "\AUR_AdvancedUrbanRappelling\weightSmall";
-	// };
-// };
+class CfgVehicles {
+	class Land_Camping_Light_F;
+	class AUR_RopeSmallWeight : Land_Camping_Light_F {
+		scope		= 2;
+		displayname = "Rope weight";
+		model		= "\AUR_AdvancedUrbanRappelling\weightSmall";
+	};
+};
 
 #include "cfgAnimations.hpp"
