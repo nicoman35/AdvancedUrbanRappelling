@@ -81,21 +81,21 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		};
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	
-	/*
-		Description:
-		Finds the nearest rappel point within 1.5m of the specified player.
-		
-		Parameter(s):
-		_this select 0: OBJECT - The rappelling unit
-		_this select 1: STRING - Search type - "FAST_EXISTS_CHECK" or "POSITION". If FAST_EXISTS_CHECK, this function
-			does a quicker search for rappel points and return 1 if a possible rappel point is found, otherwise 0.
-			If POSITION, the function will return the rappel position and direction in an array, or empty array if
-			no position is found.
-			
-		Returns: 
-		Number or Array (see above)
-	*/
 	AUR_Find_Nearby_Rappel_Point = {
+	/*
+	Description:
+	Finds the nearest rappel point within 1.5m of the specified player.
+	
+	Parameter(s):
+	_this select 0: OBJECT - The rappelling unit
+	_this select 1: STRING - Search type - "FAST_EXISTS_CHECK" or "POSITION". If FAST_EXISTS_CHECK, this function
+		does a quicker search for rappel points and return 1 if a possible rappel point is found, otherwise 0.
+		If POSITION, the function will return the rappel position and direction in an array, or empty array if
+		no position is found.
+		
+	Returns: 
+	Number or Array (see above)
+	*/
 		params ["_unit", ["_searchType", "FAST_EXISTS_CHECK"]];
 		private _unitPosition = getPosASL _unit;
 		private _intersectionRadius = 1.5;
@@ -200,19 +200,6 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		};
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-	AUR_Rappellng_Ropes = [				// [name of rope item, length in m]
-		["AUR_Rappel_Rope_10", 10],
-		["ACE_rope12", 12],
-		["ACE_rope15", 15],
-		["ACE_rope18", 18],
-		["AUR_Rappel_Rope_20", 20],
-		["ACE_rope27", 27],
-		["AUR_Rappel_Rope_30", 30],
-		["ACE_rope36", 36],
-		["AUR_Rappel_Rope_50", 50],
-		["AUR_Rappel_Rope_70", 70]
-	];
-
 	AUR_Rappel_Action_Check = {
 		params ["_unit"];
 		if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && (!("AUR_Rappel_Gear" in (items _unit)) || !([_unit] call AUR_Rappel_Rope_Check))) exitWith {false};
@@ -275,7 +262,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		private _startPositionHeight = [_unitStartPosition] call AUR_Position_GetPos_Z;
 		private _neededLength = _startPositionHeight + ((_startPositionHeight / 10) min 5);  // get a length of required height plus a length of 10% or 5 meter, dependent on which value is lower
 		
-		diag_log formatText ["%1%2%3%4%5%6%7%8%9", time, "s  (AUR_Get_Inventory_Ropelength) _unit 1: ", _unit, ", _unitStartPosition: ", _unitStartPosition, ", _startPositionHeight: ", _startPositionHeight, ", _neededLength: ", _neededLength];		
+		// diag_log formatText ["%1%2%3%4%5%6%7%8%9", time, "s  (AUR_Get_Inventory_Ropelength) _unit 1: ", _unit, ", _unitStartPosition: ", _unitStartPosition, ", _startPositionHeight: ", _startPositionHeight, ", _neededLength: ", _neededLength];		
 		
 		// private _neededLength = ([_unit] call AUR_Get_Unit_Height_Above_Ground) + ((([_unit] call AUR_Get_Unit_Height_Above_Ground) / 10) min 5);  // get a length of required height plus a length of 10% or 5 meter, dependent on which value is lower
 		private _unitInventoryRopes = [_unit] call AUR_Get_Unit_Inventory_Rope_Types;			// build arrays containing unit's rappelling ropes and respective lengths 
@@ -335,45 +322,39 @@ AUR_Advanced_Urban_Rappelling_Install = {
 	AUR_Rappel_Attach_Action_Check = {
 		params ["_player"];
 		if (_player getVariable ["AUR_Is_Rappelling", false]) exitWith {false};
-		if (AUR_ADVANCED_RAPPELING_ROPES_HANDLING != 2) exitWith {false};
+		// if (AUR_ADVANCED_RAPPELING_ROPES_HANDLING != 2) exitWith {false};
 		if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && !("AUR_Rappel_Gear" in (items _player))) exitWith {false};
 		if (vehicle _player != _player) exitWith {false};		
 		_rappelItems = (_player nearObjects 1.5) select {_x getVariable ["AUR_Rappel_Rope_Free", false]};		
-		diag_log formatText ["%1%2%3%4%5", time, "s  (AUR_Rappel_Attach_Action_Check) _rappelItems 1: ", _rappelItems, ", getPos _player: ", getPos _player];		
+		// diag_log formatText ["%1%2%3%4%5", time, "s  (AUR_Rappel_Attach_Action_Check) _rappelItems 1: ", _rappelItems, ", getPos _player: ", getPos _player];		
 		if (count _rappelItems == 0) exitWith {false};
 		{
 			private _stats = _x getVariable ["AUR_Rappel_Item_Stats", []];
 			private _item = _stats select 0;
 			switch true do {
 				case (count _stats == 0): {
-					diag_log formatText ["%1%2%3%4", time, "s  (AUR_Rappel_Attach_Action_Check) _x: ", _x, " deleted! (no stats)"];
+					// diag_log formatText ["%1%2%3%4", time, "s  (AUR_Rappel_Attach_Action_Check) _x: ", _x, " deleted! (no stats)"];
 					deleteVehicle _x;
 				};
 				case (!(alive (_stats select 0)) || !(alive (_stats select 1))): {
-					diag_log formatText ["%1%2%3%4", time, "s  (AUR_Rappel_Attach_Action_Check) _x: ", _x, " deleted! (not alive)"];	
+					// diag_log formatText ["%1%2%3%4", time, "s  (AUR_Rappel_Attach_Action_Check) _x: ", _x, " deleted! (not alive)"];	
 					deleteVehicle _x;
 				};
 				// case (_x isKindOf "Land_Can_V2_F"): {
 					// private _rappelDevice = ropeAttachedTo _x;
-					// if !(_rappelDevice isKindOf "Land_Camping_Light_F") then {deleteVehicle _x};
+					// if !(_rappelDevice isKindOf "AUR_RopeSmallWeight") then {deleteVehicle _x};
 				// };
 				// case (_item isKindOf "Land_Can_V2_F"): {
 					// private _rappelDevice = ropeAttachedTo _item;
-					// if !(_rappelDevice isKindOf "Land_Camping_Light_F") then {deleteVehicle _x};
+					// if !(_rappelDevice isKindOf "AUR_RopeSmallWeight") then {deleteVehicle _x};
 				// };
 			};
 		} forEach _rappelItems;
 		_rappelItems = (_player nearObjects 1.5) select {_x getVariable ["AUR_Rappel_Rope_Free", false]};		
-		diag_log formatText ["%1%2%3", time, "s  (AUR_Rappel_Attach_Action_Check) _rappelItems 2: ", _rappelItems];		
+		// diag_log formatText ["%1%2%3", time, "s  (AUR_Rappel_Attach_Action_Check) _rappelItems 2: ", _rappelItems];		
 		if (count _rappelItems == 0) exitWith {false};
 		true
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-// maybe intresting?
-// ropeX = vehicle player nearObjects ["rope", 20];
-// ropesegmentX = vehicle player nearObjects ["ropesegment", 20];
-// {if (typeOf _x == "rope") then {_x setObjectTexture [0, "\scmod_fire\data\pipes.paa"]; _x setObjectTexture [1, ""];};} foreach ropeX;
-// {if (typeOf _x == "ropesegment") then {_x setObjectTexture [0, "\scmod_fire\data\pipes.paa"]; _x setObjectTexture [1, ""];};} foreach ropesegmentX;
 
 	AUR_Rappel_Attach_Action = {
 		params ["_player"];
@@ -388,7 +369,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		private _ropeLength = _stats select 4;
 		private _unitPreRappelPosition = _stats select 5;
 
-		diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel_Attach_Action) _rappelDevice item stats: ", _stats];
+		// diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel_Attach_Action) _rappelDevice item stats: ", _stats];
 			
 		// if (_partner isKindOf "Land_Can_V2_F") then {
 			// deleteVehicle _item;
@@ -425,11 +406,11 @@ AUR_Advanced_Urban_Rappelling_Install = {
 				case (!(alive (_stats select 0)) || !(alive (_stats select 1))): {deleteVehicle _x};
 				case (_x isKindOf "Land_Can_V2_F"): {
 					private _rappelDevice = ropeAttachedTo _x;
-					if !(_rappelDevice isKindOf "Land_Camping_Light_F") then {deleteVehicle _x};
+					if !(_rappelDevice isKindOf "AUR_RopeSmallWeight") then {deleteVehicle _x};
 				};
 				case (_item isKindOf "Land_Can_V2_F"): {
 					private _rappelDevice = ropeAttachedTo _item;
-					if !(_rappelDevice isKindOf "Land_Camping_Light_F") then {deleteVehicle _x};
+					if !(_rappelDevice isKindOf "AUR_RopeSmallWeight") then {deleteVehicle _x};
 				};
 			};
 		} forEach _rappelItems;
@@ -574,331 +555,316 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		params ["_unit", "_rappelPoint", "_rappelDirection", "_ropeLength", "_unitPreRappelPosition"];
 		_unit setVariable ["AUR_Is_Rappelling", true, true];
 		
-		diag_log formatText ["%1%2%3%4%5%6%7%8", time, "s  (AUR_Rappel START) unit ", _unit, ", _ropeLength: ", _ropeLength, ", _rappelPoint: ", _rappelPoint];
+		// diag_log formatText ["%1%2%3%4%5%6%7%8", time, "s  (AUR_Rappel START) unit ", _unit, ", _ropeLength: ", _ropeLength, ", _rappelPoint: ", _rappelPoint];
 		
 		private _unitStartPosition = getPosASL _unit;
 		if (isNil {_unitPreRappelPosition}) then {
 			_unitPreRappelPosition = getPosASL _unit;
-			diag_log formatText ["%1%2%3%4", time, "s  (AUR_Rappel) _unitPreRappelPosition is nil "];
+			// diag_log formatText ["%1%2%3%4", time, "s  (AUR_Rappel) _unitPreRappelPosition is nil "];
 			// _unitStartPosition = _rappelPoint vectorAdd (_rappelDirection vectorMultiply 2);			// start player rappelling 2m out from the rappel point
 			// _unitStartPosition set [2, getPosASL _unit select 2];
 			_unitStartPosition = [_unit, _rappelPoint, _rappelDirection] call AUR_Get_Unit_Start_Position;
 			_unit setPosWorld _unitStartPosition;
 		};
-		// private _anchor = createVehicle ["Land_Can_V2_F", _unit, [], 0, "CAN_COLLIDE"];					// create anchor for rope (at rappel point)
-		// hideObject _anchor;
-		// _anchor enableSimulation false;
-		// _anchor allowDamage false;
-		// [[_anchor], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
-		// private _vehicle = "B_static_AA_F";
-		// if (isClass(configfile >> "CfgPatches" >> "ace_main")) then {_vehicle = "ACE_O_T_SpottingScope"};	// ACE v3.12.6 compatibility
-		// private _rappelDevice = createVehicle [_vehicle, _unit, [], 0, "CAN_COLLIDE"];					// create rappel device (attached to player)
-		// hideObject _rappelDevice;
-		// _rappelDevice setPosWorld _unitStartPosition;
-		// _rappelDevice allowDamage false;
-		// [[_rappelDevice], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
-		// [[_unit, _rappelDevice, _anchor], "AUR_Play_Rappelling_Sounds_Global"] call AUR_RemoteExecServer;
+		private _anchor = createVehicle ["Land_Can_V2_F", _unit, [], 0, "CAN_COLLIDE"];					// create anchor for rope (at rappel point)
+		hideObject _anchor;
+		_anchor enableSimulation false;
+		_anchor allowDamage false;
+		[[_anchor], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
+		private _vehicle = "B_static_AA_F";
+		if (isClass(configfile >> "CfgPatches" >> "ace_main")) then {_vehicle = "ACE_O_T_SpottingScope"};	// ACE v3.12.6 compatibility
+		private _rappelDevice = createVehicle [_vehicle, _unit, [], 0, "CAN_COLLIDE"];					// create rappel device (attached to player)
+		hideObject _rappelDevice;
+		_rappelDevice setPosWorld _unitStartPosition;
+		_rappelDevice allowDamage false;
+		[[_rappelDevice], "AUR_Hide_Object_Global"] call AUR_RemoteExecServer;
+		[[_unit, _rappelDevice, _anchor], "AUR_Play_Rappelling_Sounds_Global"] call AUR_RemoteExecServer;
 			
-		// private _heightDifference =  abs((_unitStartPosition select 2) - (_rappelPoint select 2));
-		// private _lengthRope1 = 1;
-		// private _lengthRope2 = _ropeLength - 1;
-		// private _rope2 = ropeCreate [_rappelDevice, [-0.15, 0, 0], _lengthRope2];		// upper start position
-		// if (( _unit getVariable ["AUR_Rappel_Attach", false]) && _heightDifference > 3) then {
-			// ropeDestroy _rope2;
-			// _lengthRope1 = _heightDifference - 1;													// if starting at lower position, first rope sould be height difference between lower position and upper rappelling point, minus 1 meter; to prevent having very long ropes between climber and upper rappelling point.
-			// _lengthRope2 = (_ropeLength - _lengthRope1) max 2;
-			// _rope2 = ropeCreate [_rappelDevice, [-0.15, 0, 0], _lengthRope2];						// lower start position
-		// };
-		// _rope2 allowDamage false;
-		// private _rope1 = ropeCreate [_rappelDevice, [0, 0.15, 0], _anchor, [0, 0, 0], _lengthRope1];		// upper start position
-		// _rope1 allowDamage false;		
-		// _anchor setPosWorld _rappelPoint;
+		private _heightDifference =  abs((_unitStartPosition select 2) - (_rappelPoint select 2));
+		private _lengthRope1 = 1;
+		private _lengthRope2 = _ropeLength - 1;
+		private _rope2 = ropeCreate [_rappelDevice, [-0.15, 0, 0], _lengthRope2];		// upper start position
+		if (( _unit getVariable ["AUR_Rappel_Attach", false]) && _heightDifference > 3) then {
+			ropeDestroy _rope2;
+			_lengthRope1 = _heightDifference - 1;													// if starting at lower position, first rope sould be height difference between lower position and upper rappelling point, minus 1 meter; to prevent having very long ropes between climber and upper rappelling point.
+			_lengthRope2 = (_ropeLength - _lengthRope1) max 2;
+			_rope2 = ropeCreate [_rappelDevice, [-0.15, 0, 0], _lengthRope2];						// lower start position
+		};
+		_rope2 allowDamage false;
+		private _rope1 = ropeCreate [_rappelDevice, [0, 0.15, 0], _anchor, [0, 0, 0], _lengthRope1];		// upper start position
+		_rope1 allowDamage false;		
+		_anchor setPosWorld _rappelPoint;
 		
 		// diag_log formatText ["%1%2%3%4%5%6%7%8", time, "s  (AUR_Rappel) _lengthRope1 ", _lengthRope1, ", _lengthRope2: ", _lengthRope2, ", _heightDifference: ", _heightDifference];
 		
-		// _anchor setVariable ["AUR_Rappel_Rope_Free", false];					// set anchor busy; only usefull in case of persistent ropes; only one climber allowed per rope
-		// _unit setVariable ["AUR_Rappel_Rope_Top", _rope1];
-		// _unit setVariable ["AUR_Rappel_Rope_Bottom", _rope2];
-		// _unit setVariable ["AUR_Rappel_Rope_Length", _ropeLength];
+		_anchor setVariable ["AUR_Rappel_Rope_Free", false];					// set anchor busy; only usefull in case of persistent ropes; only one climber allowed per rope
+		_unit setVariable ["AUR_Rappel_Rope_Top", _rope1];
+		_unit setVariable ["AUR_Rappel_Rope_Bottom", _rope2];
+		_unit setVariable ["AUR_Rappel_Rope_Length", _ropeLength];
 
-		// [_unit] spawn AUR_Enable_Rappelling_Animation;
-		// _unit setVectorDir (_rappelDirection vectorMultiply -1);											// Make player face the wall they're rappelling on
+		[_unit] spawn AUR_Enable_Rappelling_Animation;
+		_unit setVectorDir (_rappelDirection vectorMultiply -1);											// Make player face the wall they're rappelling on
 		
-		// private _gravityAccelerationVec = [0, 0, -9.8];
-		// private _velocityVec = [0, 0, 0];
-		// private _lastTime = diag_tickTime;
-		// private _lastPosition = AGLtoASL (_rappelDevice modelToWorldVisual [0, 0, 0]);
-		// private _decendRopeKeyDownHandler = -1;
-		// private _ropeKeyUpHandler = -1;
-		// if (_unit == player) then {	
-			// _decendRopeKeyDownHandler = (findDisplay 46) displayAddEventHandler ["KeyDown", {
-				// if (_this select 1 in (actionKeys "MoveBack")) then {
-					// private _ropeLength = player getVariable ["AUR_Rappel_Rope_Length", 100];
-					// private _topRope = player getVariable ["AUR_Rappel_Rope_Top", nil];
-					// if (!isNil "_topRope") then {
-						// if ((ropeLength _topRope) + 1 < _ropeLength) then {
-							// private _sinkRate = AUR_ADVANCED_RAPPELING_VELOCITY * 2;
-							// if (_sinkRate > 6) then {_sinkRate = 6};
+		private _gravityAccelerationVec = [0, 0, -9.8];
+		private _velocityVec = [0, 0, 0];
+		private _lastTime = diag_tickTime;
+		private _lastPosition = AGLtoASL (_rappelDevice modelToWorldVisual [0, 0, 0]);
+		private _decendRopeKeyDownHandler = -1;
+		private _ropeKeyUpHandler = -1;
+		if (_unit == player) then {	
+			_decendRopeKeyDownHandler = (findDisplay 46) displayAddEventHandler ["KeyDown", {
+				if (_this select 1 in (actionKeys "MoveBack")) then {
+					private _ropeLength = player getVariable ["AUR_Rappel_Rope_Length", 100];
+					private _topRope = player getVariable ["AUR_Rappel_Rope_Top", nil];
+					if (!isNil "_topRope") then {
+						if ((ropeLength _topRope) + 1 < _ropeLength) then {
+							private _sinkRate = AUR_ADVANCED_RAPPELING_VELOCITY * 2;
+							if (_sinkRate > 6) then {_sinkRate = 6};
 							
-							// // diag_log formatText ["%1%2%3%4%5%6%7%8%9%10%11%12%13", time, "s  (AUR_Rappel) (player): ", _unit, ", length toprope: ", ropeLength _topRope, ", _sinkRate: ", _sinkRate, ", 3. arg: ", ((ropeLength _topRope) + (AUR_ADVANCED_RAPPELING_VELOCITY / 10)) min _ropeLength];
+							// diag_log formatText ["%1%2%3%4%5%6%7%8%9%10%11%12%13", time, "s  (AUR_Rappel) (player): ", _unit, ", length toprope: ", ropeLength _topRope, ", _sinkRate: ", _sinkRate, ", 3. arg: ", ((ropeLength _topRope) + (AUR_ADVANCED_RAPPELING_VELOCITY / 10)) min _ropeLength];
 							
-							// ropeUnwind [_topRope, _sinkRate, ((ropeLength _topRope) + (AUR_ADVANCED_RAPPELING_VELOCITY / 10)) min _ropeLength];
-							// private _bottomRope = player getVariable ["AUR_Rappel_Rope_Bottom", nil];
-							// if (!isNil "_bottomRope") then {
-								// ropeUnwind [_bottomRope, _sinkRate, ((ropeLength _bottomRope) - (AUR_ADVANCED_RAPPELING_VELOCITY / 10)) max 0];
+							ropeUnwind [_topRope, _sinkRate, ((ropeLength _topRope) + (AUR_ADVANCED_RAPPELING_VELOCITY / 10)) min _ropeLength];
+							private _bottomRope = player getVariable ["AUR_Rappel_Rope_Bottom", nil];
+							if (!isNil "_bottomRope") then {
+								ropeUnwind [_bottomRope, _sinkRate, ((ropeLength _bottomRope) - (AUR_ADVANCED_RAPPELING_VELOCITY / 10)) max 0];
 										
-								// // diag_log formatText ["%1%2%3%4%5%6%7%8%9%10%11%12%13", time, "s  (AUR_Rappel) (player) length _bottomRope: ", ropeLength _bottomRope, ", 3. arg: ", ((ropeLength _bottomRope) - (AUR_ADVANCED_RAPPELING_VELOCITY / 10)) max 0];
+								// diag_log formatText ["%1%2%3%4%5%6%7%8%9%10%11%12%13", time, "s  (AUR_Rappel) (player) length _bottomRope: ", ropeLength _bottomRope, ", 3. arg: ", ((ropeLength _bottomRope) - (AUR_ADVANCED_RAPPELING_VELOCITY / 10)) max 0];
 								
-							// };
-						// };
-					// };
-				// };
-				// if (_this select 1 in (actionKeys "MoveForward")) then {
-					// private _ropeLength = player getVariable ["AUR_Rappel_Rope_Length", 100];
-					// private _topRope = player getVariable ["AUR_Rappel_Rope_Top", nil];
-					// if (!isNil "_topRope") then {
-						// private _climbVelocity = AUR_ADVANCED_RAPPELING_VELOCITY / 10;
-						// if (_climbVelocity > 0.2) then {_climbVelocity = 0.2};
-						// private _climbRate = AUR_ADVANCED_RAPPELING_VELOCITY;
-						// if (_climbRate > 2) then {_climbRate = 2};
-						// ropeUnwind [_topRope, _climbRate, ((ropeLength _topRope) - _climbVelocity) min _ropeLength];
-						// private _bottomRope = player getVariable ["AUR_Rappel_Rope_Bottom", nil];
-						// if (!isNil "_bottomRope") then {
-							// ropeUnwind [ _bottomRope, _climbRate, ((ropeLength _bottomRope) + _climbVelocity) max 0];
-						// };
-					// };
-				// };
-				// if (_this select 1 in (actionKeys "Turbo") && player getVariable ["AUR_JUMP_PRESSED_START", 0] == 0) then {
-					// player setVariable ["AUR_JUMP_PRESSED_START", diag_tickTime];
-				// };
+							};
+						};
+					};
+				};
+				if (_this select 1 in (actionKeys "MoveForward")) then {
+					private _ropeLength = player getVariable ["AUR_Rappel_Rope_Length", 100];
+					private _topRope = player getVariable ["AUR_Rappel_Rope_Top", nil];
+					if (!isNil "_topRope") then {
+						private _climbVelocity = AUR_ADVANCED_RAPPELING_VELOCITY / 10;
+						if (_climbVelocity > 0.2) then {_climbVelocity = 0.2};
+						private _climbRate = AUR_ADVANCED_RAPPELING_VELOCITY;
+						if (_climbRate > 2) then {_climbRate = 2};
+						ropeUnwind [_topRope, _climbRate, ((ropeLength _topRope) - _climbVelocity) min _ropeLength];
+						private _bottomRope = player getVariable ["AUR_Rappel_Rope_Bottom", nil];
+						if (!isNil "_bottomRope") then {
+							ropeUnwind [ _bottomRope, _climbRate, ((ropeLength _bottomRope) + _climbVelocity) max 0];
+						};
+					};
+				};
+				if (_this select 1 in (actionKeys "Turbo") && player getVariable ["AUR_JUMP_PRESSED_START", 0] == 0) then {
+					player setVariable ["AUR_JUMP_PRESSED_START", diag_tickTime];
+				};
 				
-				// if (_this select 1 in (actionKeys "TurnRight")) then {
-					// player setVariable ["AUR_RIGHT_DOWN", true];
-				// };
-				// if (_this select 1 in (actionKeys "TurnLeft")) then {
-					// player setVariable ["AUR_LEFT_DOWN", true];
-				// };
-			// }];
-			// _ropeKeyUpHandler = (findDisplay 46) displayAddEventHandler ["KeyUp", {
-				// if (_this select 1 in (actionKeys "Turbo")) then {
-					// player setVariable ["AUR_JUMP_PRESSED", true];
-					// player setVariable ["AUR_JUMP_PRESSED_TIME", diag_tickTime - (player getVariable ["AUR_JUMP_PRESSED_START", diag_tickTime])];
-					// player setVariable ["AUR_JUMP_PRESSED_START", 0];	
-				// };
-				// if (_this select 1 in (actionKeys "TurnRight")) then {
-					// player setVariable ["AUR_RIGHT_DOWN", false];
-				// };
-				// if (_this select 1 in (actionKeys "TurnLeft")) then {
-					// player setVariable ["AUR_LEFT_DOWN", false];
-				// };
-			// }];
-		// } else {
-			// [_unit] spawn {
-				// params ["_unit"];
-				// sleep 1;
-				// private _ropeLength = _unit getVariable ["AUR_Rappel_Rope_Length", 100];													// get rope length of rope in unit's inventory
-				// private _topRope = _unit getVariable ["AUR_Rappel_Rope_Top", nil];
-				// private _bottomRope = _unit getVariable ["AUR_Rappel_Rope_Bottom", nil];
-				// private _randomSpeedFactor = ((random 10) - 5) / 10;																		// + / - 0.5 m / s random speed add
-				// private _sinkRate = AUR_ADVANCED_RAPPELING_VELOCITY * 2;																	// set sink rate in meter per second dependent on CBA slider setting
-				// if (_sinkRate > 6) then {_sinkRate = 6};																					// do not allow super human velocities
-				// _sinkRate = _sinkRate + _randomSpeedFactor;
-				// while {!isNil "_topRope" && (ropeLength _topRope) + 3 < _ropeLength && (ropeLength _bottomRope) > 3 && (getPosATL _unit select 2) > 2} do {					// rappel down AI unit, until rope end or less than 3 m above bottom
-					// ropeUnwind [_topRope, _sinkRate, ((ropeLength _topRope) + (AUR_ADVANCED_RAPPELING_VELOCITY / 10)) min _ropeLength];
-					// // diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel) _unit: ", _unit, ", length topRope: ", ropeLength _topRope, ", length bottomRope: ", ropeLength _bottomRope];
-					// if (!isNil "_bottomRope") then {
-						// ropeUnwind [_bottomRope, _sinkRate, ((ropeLength _bottomRope) - (AUR_ADVANCED_RAPPELING_VELOCITY / 10)) max 0];
-					// };
-					// sleep 0.04;
-				// };
-				// if ((position _unit select 2) < 3) exitWith {_unit setVariable ["AUR_Detach_Rope", true]};			// detach AI unit from rope, if it's height above the surface is 3 m or less, then leave spawn loop
-				// sleep 3;
-				// _unit groupChat format[localize "STR_ROPE_TOO_SHORT", _ropeLength];															// AI omplains about rope too short
-				// sleep 3;
-				// while {!isNil "_topRope"} do {																								// after a short pause, AI unit will climb back up
-					// private _climbVelocity = AUR_ADVANCED_RAPPELING_VELOCITY / 10;
-					// if (_climbVelocity > 0.2) then {_climbVelocity = 0.2};
-					// private _climbRate = AUR_ADVANCED_RAPPELING_VELOCITY;
-					// if (_climbRate > 2) then {_climbRate = 2};
-					// ropeUnwind [_topRope, _climbRate, ((ropeLength _topRope) - _climbVelocity) min _ropeLength];
-					// if (!isNil "_bottomRope") then {
-						// ropeUnwind [_bottomRope, _climbRate, ((ropeLength _bottomRope) + _climbVelocity) max 0];
-					// };
-					// if ((ropeLength _topRope) <= 1) exitWith {
-						// sleep 1;
-						// _unit setVariable ["AUR_Climb_To_Top", true];																		// set true, once AI reaches top, then leave spawn loop
-					// };
-					// sleep 0.04;
-				// };
-			// };
-		// };
+				if (_this select 1 in (actionKeys "TurnRight")) then {
+					player setVariable ["AUR_RIGHT_DOWN", true];
+				};
+				if (_this select 1 in (actionKeys "TurnLeft")) then {
+					player setVariable ["AUR_LEFT_DOWN", true];
+				};
+			}];
+			_ropeKeyUpHandler = (findDisplay 46) displayAddEventHandler ["KeyUp", {
+				if (_this select 1 in (actionKeys "Turbo")) then {
+					player setVariable ["AUR_JUMP_PRESSED", true];
+					player setVariable ["AUR_JUMP_PRESSED_TIME", diag_tickTime - (player getVariable ["AUR_JUMP_PRESSED_START", diag_tickTime])];
+					player setVariable ["AUR_JUMP_PRESSED_START", 0];	
+				};
+				if (_this select 1 in (actionKeys "TurnRight")) then {
+					player setVariable ["AUR_RIGHT_DOWN", false];
+				};
+				if (_this select 1 in (actionKeys "TurnLeft")) then {
+					player setVariable ["AUR_LEFT_DOWN", false];
+				};
+			}];
+		} else {
+			[_unit] spawn {
+				params ["_unit"];
+				sleep 1;
+				private _ropeLength = _unit getVariable ["AUR_Rappel_Rope_Length", 100];													// get rope length of rope in unit's inventory
+				private _topRope = _unit getVariable ["AUR_Rappel_Rope_Top", nil];
+				private _bottomRope = _unit getVariable ["AUR_Rappel_Rope_Bottom", nil];
+				private _randomSpeedFactor = ((random 10) - 5) / 10;																		// + / - 0.5 m / s random speed add
+				private _sinkRate = AUR_ADVANCED_RAPPELING_VELOCITY * 2;																	// set sink rate in meter per second dependent on CBA slider setting
+				if (_sinkRate > 6) then {_sinkRate = 6};																					// do not allow super human velocities
+				_sinkRate = _sinkRate + _randomSpeedFactor;
+				while {!isNil "_topRope" && (ropeLength _topRope) + 3 < _ropeLength && (ropeLength _bottomRope) > 3 && (getPosATL _unit select 2) > 2} do {					// rappel down AI unit, until rope end or less than 3 m above bottom
+					ropeUnwind [_topRope, _sinkRate, ((ropeLength _topRope) + (AUR_ADVANCED_RAPPELING_VELOCITY / 10)) min _ropeLength];
+					// diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel) _unit: ", _unit, ", length topRope: ", ropeLength _topRope, ", length bottomRope: ", ropeLength _bottomRope];
+					if (!isNil "_bottomRope") then {
+						ropeUnwind [_bottomRope, _sinkRate, ((ropeLength _bottomRope) - (AUR_ADVANCED_RAPPELING_VELOCITY / 10)) max 0];
+					};
+					sleep 0.04;
+				};
+				if ((position _unit select 2) < 3) exitWith {_unit setVariable ["AUR_Detach_Rope", true]};			// detach AI unit from rope, if it's height above the surface is 3 m or less, then leave spawn loop
+				sleep 3;
+				_unit groupChat format[localize "STR_ROPE_TOO_SHORT", _ropeLength];															// AI omplains about rope too short
+				sleep 3;
+				while {!isNil "_topRope"} do {																								// after a short pause, AI unit will climb back up
+					private _climbVelocity = AUR_ADVANCED_RAPPELING_VELOCITY / 10;
+					if (_climbVelocity > 0.2) then {_climbVelocity = 0.2};
+					private _climbRate = AUR_ADVANCED_RAPPELING_VELOCITY;
+					if (_climbRate > 2) then {_climbRate = 2};
+					ropeUnwind [_topRope, _climbRate, ((ropeLength _topRope) - _climbVelocity) min _ropeLength];
+					if (!isNil "_bottomRope") then {
+						ropeUnwind [_bottomRope, _climbRate, ((ropeLength _bottomRope) + _climbVelocity) max 0];
+					};
+					if ((ropeLength _topRope) <= 1) exitWith {
+						sleep 1;
+						_unit setVariable ["AUR_Climb_To_Top", true];																		// set true, once AI reaches top, then leave spawn loop
+					};
+					sleep 0.04;
+				};
+			};
+		};
 
-		// private _walkingOnWallForce = [0, 0, 0];
-		// private _lastAiJumpTime = diag_tickTime;
-		// private _underWater = 0;
+		private _walkingOnWallForce = [0, 0, 0];
+		private _lastAiJumpTime = diag_tickTime;
+		private _underWater = 0;
 			
-		// // while {alive _unit && vehicle _unit == _unit && ropeLength _rope2 > 1 && !(_unit getVariable ["AUR_Climb_To_Top", false]) && !(_unit getVariable ["AUR_Detach_Rope", false])} do {
-		// while {alive _unit && vehicle _unit == _unit && ropeLength _rope2 > 0.5 && !(_unit getVariable ["AUR_Climb_To_Top", false]) && !(_unit getVariable ["AUR_Detach_Rope", false])} do {
-			// private _currentTime = diag_tickTime;
-			// private _timeSinceLastUpdate = _currentTime - _lastTime;
-			// _lastTime = _currentTime;
-			// if (_timeSinceLastUpdate > 1) then {
-				// _timeSinceLastUpdate = 0;
-			// };
+		while {alive _unit && vehicle _unit == _unit && ropeLength _rope2 > 0.5 && !(_unit getVariable ["AUR_Climb_To_Top", false]) && !(_unit getVariable ["AUR_Detach_Rope", false])} do {
+			private _currentTime = diag_tickTime;
+			private _timeSinceLastUpdate = _currentTime - _lastTime;
+			_lastTime = _currentTime;
+			if (_timeSinceLastUpdate > 1) then {
+				_timeSinceLastUpdate = 0;
+			};
 
-			// private _environmentWindVelocity = wind;
-			// private _unitWindVelocity = _velocityVec vectorMultiply -1;
-			// private _totalWindVelocity = _environmentWindVelocity vectorAdd _unitWindVelocity;
-			// private _totalWindForce = _totalWindVelocity vectorMultiply (9.8 / 53);
+			private _environmentWindVelocity = wind;
+			private _unitWindVelocity = _velocityVec vectorMultiply -1;
+			private _totalWindVelocity = _environmentWindVelocity vectorAdd _unitWindVelocity;
+			private _totalWindForce = _totalWindVelocity vectorMultiply (9.8 / 53);
 
-			// private _accelerationVec = _gravityAccelerationVec vectorAdd _totalWindForce vectorAdd _walkingOnWallForce;
-			// _velocityVec = _velocityVec vectorAdd (_accelerationVec vectorMultiply _timeSinceLastUpdate);
-			// private _newPosition = _lastPosition vectorAdd (_velocityVec vectorMultiply _timeSinceLastUpdate);
+			private _accelerationVec = _gravityAccelerationVec vectorAdd _totalWindForce vectorAdd _walkingOnWallForce;
+			_velocityVec = _velocityVec vectorAdd (_accelerationVec vectorMultiply _timeSinceLastUpdate);
+			private _newPosition = _lastPosition vectorAdd (_velocityVec vectorMultiply _timeSinceLastUpdate);
 
-			// if (_newPosition distance _rappelPoint > ((ropeLength _rope1) + 1)) then {
-				// _newPosition = (_rappelPoint) vectorAdd ((vectorNormalized ((_rappelPoint) vectorFromTo _newPosition)) vectorMultiply ((ropeLength _rope1) + 1));
-				// private _surfaceVector = (vectorNormalized (_newPosition vectorFromTo (_rappelPoint)));
-				// _velocityVec = _velocityVec vectorAdd ((_surfaceVector vectorMultiply (_velocityVec vectorDotProduct _surfaceVector)) vectorMultiply -1);
-			// };
+			if (_newPosition distance _rappelPoint > ((ropeLength _rope1) + 1)) then {
+				_newPosition = (_rappelPoint) vectorAdd ((vectorNormalized ((_rappelPoint) vectorFromTo _newPosition)) vectorMultiply ((ropeLength _rope1) + 1));
+				private _surfaceVector = (vectorNormalized (_newPosition vectorFromTo (_rappelPoint)));
+				_velocityVec = _velocityVec vectorAdd ((_surfaceVector vectorMultiply (_velocityVec vectorDotProduct _surfaceVector)) vectorMultiply -1);
+			};
 
-			// private _radius = 0.85;
-			// private _intersectionTests = 10;
-			// for "_i" from 0 to _intersectionTests do {
-				// private _axis1 = cos ((360 / _intersectionTests) * _i);
-				// private _axis2 = sin ((360 / _intersectionTests) * _i);
-				// {
-					// private _directionUnitVector = vectorNormalized _x;
-					// private _intersectStartASL = _newPosition;
-					// private _intersectEndASL = _newPosition vectorAdd (_directionUnitVector vectorMultiply _radius);
-					// private _surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _unit, objNull, true, 10, "FIRE", "NONE"];
-					// {
-						// _x params ["_intersectionPositionASL", "_surfaceNormal", "_intersectionObject"];
-						// private _objectFileName = str _intersectionObject;
-						// if ((_objectFileName find "rope") == -1 && not (_intersectionObject isKindOf "RopeSegment") && (_objectFileName find " t_") == -1 && (_objectFileName find " b_") == -1) then {
-							// if (_newPosition distance _intersectionPositionASL < 1) then {
-								// _newPosition = _intersectionPositionASL vectorAdd ((vectorNormalized (_intersectEndASL vectorFromTo _intersectStartASL)) vectorMultiply (_radius));
-							// };
-							// _velocityVec = _velocityVec vectorAdd (( _surfaceNormal vectorMultiply (_velocityVec vectorDotProduct _surfaceNormal)) vectorMultiply -1);
-						// };
-					// } forEach _surfaces;
-				// } forEach [[_axis1, _axis2, 0], [_axis1, 0, _axis2], [0, _axis1, _axis2]];
-			// };
+			private _radius = 0.85;
+			private _intersectionTests = 10;
+			for "_i" from 0 to _intersectionTests do {
+				private _axis1 = cos ((360 / _intersectionTests) * _i);
+				private _axis2 = sin ((360 / _intersectionTests) * _i);
+				{
+					private _directionUnitVector = vectorNormalized _x;
+					private _intersectStartASL = _newPosition;
+					private _intersectEndASL = _newPosition vectorAdd (_directionUnitVector vectorMultiply _radius);
+					private _surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _unit, objNull, true, 10, "FIRE", "NONE"];
+					{
+						_x params ["_intersectionPositionASL", "_surfaceNormal", "_intersectionObject"];
+						private _objectFileName = str _intersectionObject;
+						if ((_objectFileName find "rope") == -1 && not (_intersectionObject isKindOf "RopeSegment") && (_objectFileName find " t_") == -1 && (_objectFileName find " b_") == -1) then {
+							if (_newPosition distance _intersectionPositionASL < 1) then {
+								_newPosition = _intersectionPositionASL vectorAdd ((vectorNormalized (_intersectEndASL vectorFromTo _intersectStartASL)) vectorMultiply (_radius));
+							};
+							_velocityVec = _velocityVec vectorAdd (( _surfaceNormal vectorMultiply (_velocityVec vectorDotProduct _surfaceNormal)) vectorMultiply -1);
+						};
+					} forEach _surfaces;
+				} forEach [[_axis1, _axis2, 0], [_axis1, 0, _axis2], [0, _axis1, _axis2]];
+			};
 
-			// private _jumpPressed = _unit getVariable ["AUR_JUMP_PRESSED", false];
-			// private _jumpPressedTime = _unit getVariable ["AUR_JUMP_PRESSED_TIME", 0];
-			// private _leftDown = _unit getVariable ["AUR_LEFT_DOWN", false];
-			// private _rightDown = _unit getVariable ["AUR_RIGHT_DOWN", false];
+			private _jumpPressed = _unit getVariable ["AUR_JUMP_PRESSED", false];
+			private _jumpPressedTime = _unit getVariable ["AUR_JUMP_PRESSED_TIME", 0];
+			private _leftDown = _unit getVariable ["AUR_LEFT_DOWN", false];
+			private _rightDown = _unit getVariable ["AUR_RIGHT_DOWN", false];
 
-			// if (_unit != player) then {			// Simulate AI jumping off wall randomly
-				// if (diag_tickTime - _lastAiJumpTime > (random 30) max 5) then {
-					// _jumpPressed = true;
-					// _jumpPressedTime = 0;
-					// _lastAiJumpTime = diag_tickTime;
-				// };
-			// };
+			if (_unit != player) then {			// Simulate AI jumping off wall randomly
+				if (diag_tickTime - _lastAiJumpTime > (random 30) max 5) then {
+					_jumpPressed = true;
+					_jumpPressedTime = 0;
+					_lastAiJumpTime = diag_tickTime;
+				};
+			};
 
-			// if (_jumpPressed || _leftDown || _rightDown) then {
-				// _intersectStartASL = _newPosition;
-				// _intersectEndASL = _intersectStartASL vectorAdd (vectorDir _unit vectorMultiply (_radius + 0.3));
-				// _surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _unit, objNull, true, 10, "GEOM", "NONE"];	// Get the surface normal of the surface the player is hanging against
-				// _isAgainstSurface = false;
-				// {
-					// _x params ["_intersectionPositionASL", "_surfaceNormal", "_intersectionObject"];
-					// _objectFileName = str _intersectionObject;
-					// if((_objectFileName find "rope") == -1 && not (_intersectionObject isKindOf "RopeSegment") && (_objectFileName find " t_") == -1 && (_objectFileName find " b_") == -1 ) exitWith {
-						// _isAgainstSurface = true;
-					// };
-				// } forEach _surfaces;
+			if (_jumpPressed || _leftDown || _rightDown) then {
+				_intersectStartASL = _newPosition;
+				_intersectEndASL = _intersectStartASL vectorAdd (vectorDir _unit vectorMultiply (_radius + 0.3));
+				_surfaces = lineIntersectsSurfaces [_intersectStartASL, _intersectEndASL, _unit, objNull, true, 10, "GEOM", "NONE"];	// Get the surface normal of the surface the player is hanging against
+				_isAgainstSurface = false;
+				{
+					_x params ["_intersectionPositionASL", "_surfaceNormal", "_intersectionObject"];
+					_objectFileName = str _intersectionObject;
+					if((_objectFileName find "rope") == -1 && not (_intersectionObject isKindOf "RopeSegment") && (_objectFileName find " t_") == -1 && (_objectFileName find " b_") == -1 ) exitWith {
+						_isAgainstSurface = true;
+					};
+				} forEach _surfaces;
 
-				// if (_isAgainstSurface) then {
-					// if (_jumpPressed) then {
-						// _jumpForce = ((( 1.5 min _jumpPressedTime ) / 1.5) * 4.5) max 2.5;
-						// _velocityVec = _velocityVec vectorAdd (vectorDir _unit vectorMultiply (_jumpForce * -1));
-						// _unit setVariable ["AUR_JUMP_PRESSED", false];
-					// };
-					// if (_rightDown) then {
-						// _walkingOnWallForce = (vectorNormalized ((vectorDir _unit) vectorCrossProduct [0, 0, 1])) vectorMultiply 1;
-					// };
-					// if (_leftDown) then {
-						// _walkingOnWallForce = (vectorNormalized ((vectorDir _unit) vectorCrossProduct [0, 0, -1])) vectorMultiply 1;
-					// };
-					// if (_rightDown && _leftDown) then {
-						// _walkingOnWallForce = [0, 0, 0];
-					// }
-				// } else {
-					// _unit setVariable ["AUR_JUMP_PRESSED", false];
-				// };
-			// } else {
-				// _walkingOnWallForce = [0, 0, 0];
-			// };
+				if (_isAgainstSurface) then {
+					if (_jumpPressed) then {
+						_jumpForce = ((( 1.5 min _jumpPressedTime ) / 1.5) * 4.5) max 2.5;
+						_velocityVec = _velocityVec vectorAdd (vectorDir _unit vectorMultiply (_jumpForce * -1));
+						_unit setVariable ["AUR_JUMP_PRESSED", false];
+					};
+					if (_rightDown) then {
+						_walkingOnWallForce = (vectorNormalized ((vectorDir _unit) vectorCrossProduct [0, 0, 1])) vectorMultiply 1;
+					};
+					if (_leftDown) then {
+						_walkingOnWallForce = (vectorNormalized ((vectorDir _unit) vectorCrossProduct [0, 0, -1])) vectorMultiply 1;
+					};
+					if (_rightDown && _leftDown) then {
+						_walkingOnWallForce = [0, 0, 0];
+					}
+				} else {
+					_unit setVariable ["AUR_JUMP_PRESSED", false];
+				};
+			} else {
+				_walkingOnWallForce = [0, 0, 0];
+			};
 
-			// _rappelDevice setPosWorld (_newPosition vectorAdd (_velocityVec vectorMultiply 0.1));
-			// _rappelDevice setVectorDir (vectorDir _unit); 
-			// _unit setPosWorld (_newPosition vectorAdd [0, 0, -0.6]);
-			// _unit setVelocity [0, 0, 0];
+			_rappelDevice setPosWorld (_newPosition vectorAdd (_velocityVec vectorMultiply 0.1));
+			_rappelDevice setVectorDir (vectorDir _unit); 
+			_unit setPosWorld (_newPosition vectorAdd [0, 0, -0.6]);
+			_unit setVelocity [0, 0, 0];
 
-			// _lastPosition = _newPosition;
-			// _topRope = _unit getVariable ["AUR_Rappel_Rope_Top", nil];
-			// if (!isNil "_topRope" && AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && (_ropeLength < ((ropeLength _topRope) -5))) then {
-				// _unit setVariable ["AUR_Detach_Rope", true];
-			// };
+			_lastPosition = _newPosition;
+			_topRope = _unit getVariable ["AUR_Rappel_Rope_Top", nil];
 			
-			// if (eyePos _unit select 2 < 0) exitWith {
+			if (!isNil "_topRope" && AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && (_ropeLength < ((ropeLength _topRope) -5))) then {
+				_unit setVariable ["AUR_Detach_Rope", true];
+			};
+			
+			if (eyePos _unit select 2 < -0.5) exitWith {
 				// diag_log formatText ["%1%2%3%4%5%6%7%8", time, "s  (AUR_Rappel) loop left: Underwater"];
-			// }; // no underwater rappelling
+			}; // no underwater rappelling
+
+			// diag_log formatText ["%1%2%3%4%5%6%7%8", time, "s  (AUR_Rappel) rope1 length: ", ropeLength _rope1, ", diff: ", ((getPosASL _anchor select 2) - (getPosASL _unit select 2)) + 1];
+
+			if (_unit != player && ropeLength _rope1 > 3 && ropeLength _rope1 > (((getPosASL _anchor select 2) - (getPosASL _unit select 2)) + 2)) exitWith {
+				// diag_log formatText ["%1%2%3%4%5%6%7%8", time, "s  (AUR_Rappel) loop left: rope1 length: ", ropeLength _rope1, ", diff: ", ((getPosASL _anchor select 2) - (getPosASL _unit select 2)) + 1];
+			}; // no endles unwinding at the bottom, when rope is very long
+
+			sleep 0.01;
+		};
+
+		if (ropeLength _rope2 > 1 && alive _unit && vehicle _unit == _unit && not (_unit getVariable ["AUR_Climb_To_Top", false])) then {		
+			_unitStartASLIntersect = getPosASL _unit;
+			_unitEndASLIntersect = [_unitStartASLIntersect select 0, _unitStartASLIntersect select 1, (_unitStartASLIntersect select 2) - 5];
+			_surfaces = lineIntersectsSurfaces [_unitStartASLIntersect, _unitEndASLIntersect, _unit, objNull, true, 10];
+			_intersectionASL = [];
+			{
+				scopeName "surfaceLoop";
+				_intersectionObject = _x select 2;
+				_objectFileName = str _intersectionObject;
+				if ((_objectFileName find " t_") == -1 && (_objectFileName find " b_") == -1) then {
+					_intersectionASL = _x select 0;
+					breakOut "surfaceLoop";
+				};
+			} forEach _surfaces;
 			
-			// // if (eyePos player select 2 < 0) exitWith {
-				// // diag_log formatText ["%1%2%3%4%5%6%7%8", time, "s  (AUR_Rappel) loop left: Underwater"]
-			// // }; // no underwater rappelling
+			if (count _intersectionASL != 0) then {
+				_unit allowDamage false;
+				_unit setPosASL _intersectionASL;
+			};		
 
-			// if (ropeLength _rope1 > 3 && ropeLength _rope1 > ((getPosASL _anchor select 2) - (getPosASL _unit select 2)) exitWith {
-				// diag_log formatText ["%1%2%3%4%5%6%7%8", time, "s  (AUR_Rappel) loop left: rope1 length: ", ropeLength _rope1];
-			// }; // no underwater rappelling
-
-
-			// // if (getpos player select 2 < 1) exitWith {
-				// // diag_log formatText ["%1%2%3%4%5%6%7%8", time, "s  (AUR_Rappel) loop left: near ground"]
-			// // }; // no underwater rappelling
-			
-			// // if ((getpos _unit select 2) < 0.1) then {
-				// // _underWater = _underWater + 1;
-				// // diag_log formatText ["%1%2%3%4%5%6%7%8", time, "s  (AUR_Rappel) _underWater: ", _underWater]
-			// // } else {
-				// // _underWater = 0;
-			// // }; // no underwater rappelling
-			// // if (_underWater > 10) exitWith {
-				// // diag_log formatText ["%1%2%3%4%5%6%7%8", time, "s  (AUR_Rappel) loop left: _underWater limit"]
-			// // }; // no underwater rappelling
-			// sleep 0.01;
-		// };
-
-		// if (ropeLength _rope2 > 1 && alive _unit && vehicle _unit == _unit && not (_unit getVariable ["AUR_Climb_To_Top", false])) then {		
-			// _unitStartASLIntersect = getPosASL _unit;
-			// _unitEndASLIntersect = [_unitStartASLIntersect select 0, _unitStartASLIntersect select 1, (_unitStartASLIntersect select 2) - 5];
-			// _surfaces = lineIntersectsSurfaces [_unitStartASLIntersect, _unitEndASLIntersect, _unit, objNull, true, 10];
-			// _intersectionASL = [];
-			// {
-				// scopeName "surfaceLoop";
-				// _intersectionObject = _x select 2;
-				// _objectFileName = str _intersectionObject;
-				// if ((_objectFileName find " t_") == -1 && (_objectFileName find " b_") == -1) then {
-					// _intersectionASL = _x select 0;
-					// breakOut "surfaceLoop";
-				// };
-			// } forEach _surfaces;
-			
-			// if (count _intersectionASL != 0) then {
-				// _unit allowDamage false;
-				// _unit setPosASL _intersectionASL;
-			// };		
-
-			// if (_unit getVariable ["AUR_Detach_Rope", false]) then {
-				// if (count _intersectionASL == 0) then {
-					// _unit allowDamage true;		// Player detached from rope. Don't prevent damage if we didn't find a position on the ground
-				// };	
-			// };
-		// };
+			if (_unit getVariable ["AUR_Detach_Rope", false]) then {
+				if (count _intersectionASL == 0) then {
+					_unit allowDamage true;		// Player detached from rope. Don't prevent damage if we didn't find a position on the ground
+				};	
+			};
+		};
 		
+		private _endsRope2 = ropeEndPosition _rope2;
 		ropeDestroy _rope1;
 		ropeDestroy _rope2;
 		deleteVehicle _rappelDevice;
@@ -910,37 +876,32 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		
 		if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED) then {
 			if (AUR_ADVANCED_RAPPELING_ROPES_HANDLING == 2) exitWith {																				// let's try to leave a persistant rope hanging
-				private _bottomRopeEndWeight = createVehicle ["Land_Camping_Light_F", (getPosASL _unit), [], 0, "CAN_COLLIDE"];					// create bottom rope end weight (begin of rope, has to be a TRANSPORT physics object, see https://community.bistudio.com/wiki/ropeCreate/transport)																								// hide object
+				private _bottomRopeEndWeight = createVehicle ["AUR_RopeSmallWeight", (getPosASL _unit), [], 0, "CAN_COLLIDE"];					// create bottom rope end weight (begin of rope, has to be a TRANSPORT physics object, see https://community.bistudio.com/wiki/ropeCreate/transport)																								// hide object
 				_bottomRopeEndWeight allowDamage false;																							// do not allow damage
 				_anchor setPosWorld _unitStartPosition;			// briefly set anchor where unit started; for the free rope to fall nicely to the ground instead of entangling at upper rappelling position 
-				private _heightAnchorPoint = getPos _anchor select 2;
-				diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel) _heightAnchorPoint: ", _heightAnchorPoint , ", _ropeLength: ", _ropeLength];
-				if (_heightAnchorPoint > _ropeLength) then {
-					// _bottomRopeEndWeight setPosATL [getPos _unit select 0, getPos _unit select 1, (_heightAnchorPoint - _ropeLength)];			
-					_bottomRopeEndWeight setPos [getPos _unit select 0, getPos _unit select 1, (_heightAnchorPoint - _ropeLength)];			// set bottom rope end to surface unit is standing
-				} else {
-					private _bottomRopeEndPosition = [getpos _unit select 0, getpos _unit select 1, (getposASL _unit select 2) + 1];		// set bottom rope end 1 m above unit's current position
-					if (((_unitStartPosition select 2) + 3) < getPosASL _anchor select 2) then {											// if unit's start position was 3 or more meter lower than rope anchor, unit started at bottom end
-						_bottomRopeEndPosition = _unitStartPosition;
-						_bottomRopeEndPosition set [2, (_unitStartPosition select 2) + 1];													// set bottom rope end 1 m above unit's start position				
-					};
-					_bottomRopeEndWeight setPos _bottomRopeEndPosition;
-					diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel) _bottomRopeEndWeight positioned at: ", _bottomRopeEndPosition];
-				};
-				// sleep 0.1;
-				private _rope1 = ropeCreate [_bottomRopeEndWeight, [0, 0, -0.1], _anchor, [0, 0, 0], _ropeLength];									// now, create the rope from the on the ground lying device up to the anchor, which is stil attached to the original rappelling position. Thus the illusion of a free hanging rope is created.
-				_rope1 allowDamage false;																									// do not allow damage to rope
+				// private _heightAnchorPoint = getPos _anchor select 2;
+				// diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel) _heightAnchorPoint: ", _heightAnchorPoint, ", _ropeLength: ", _ropeLength, ", _endsRope2: ", _endsRope2];
+				// diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel) _ropeLength: ", _ropeLength, ", _endsRope2: ", _endsRope2];
+
+				private _bottomRopeEndPosition = _endsRope2 select 1;
+				_bottomRopeEndPosition set [2, ((_bottomRopeEndPosition select 2) max 0) + 1];
+				_bottomRopeEndWeight setPos _bottomRopeEndPosition;
+				// _bottomRopeEndWeight enableSimulation false;
+				
+				// private _PersistantRope = ropeCreate [_bottomRopeEndWeight, [0, 0, -0.1], _anchor, [0, 0, 0], _ropeLength];									// now, create the rope from the on the ground lying device up to the anchor, which is stil attached to the original rappelling position. Thus the illusion of a free hanging rope is created.
+				private _PersistantRope = ropeCreate [_bottomRopeEndWeight, [0, 0, 0], _anchor, [0, 0, 0], _ropeLength];									// now, create the rope from the on the ground lying device up to the anchor, which is stil attached to the original rappelling position. Thus the illusion of a free hanging rope is created.
+				_PersistantRope allowDamage false;																									// do not allow damage to rope
 				sleep 0.3;
 				_anchor setPosWorld _rappelPoint;																							// after rope was created and fell nicely, reset anchor to it's original position
 				_anchor setVariable ["AUR_Rappel_Rope_Free", true];						// set anchor free in case of persistent ropes; only one climber allowed per rope
-				_anchor setVariable ["AUR_Rappel_Item_Stats", [_bottomRopeEndWeight, _rope1, _rappelPoint, _rappelDirection, _ropeLength, _unitPreRappelPosition]];					// memory anchor relevant 'stats'
+				_anchor setVariable ["AUR_Rappel_Item_Stats", [_bottomRopeEndWeight, _PersistantRope, _rappelPoint, _rappelDirection, _ropeLength, _unitPreRappelPosition]];					// memory anchor relevant 'stats'
 				_bottomRopeEndWeight setVariable ["AUR_Rappel_Rope_Free", true];				// set rappel device busy in case of persistent ropes; only one climber allowed per rope
-				_bottomRopeEndWeight setVariable ["AUR_Rappel_Item_Stats", [_anchor, _rope1, _rappelPoint, _rappelDirection, _ropeLength, _unitPreRappelPosition]];					// memory rappel device relevant 'stats'					
-				diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel) _bottomRopeEndWeight item stats: ", _bottomRopeEndWeight getVariable "AUR_Rappel_Item_Stats"];
+				_bottomRopeEndWeight setVariable ["AUR_Rappel_Item_Stats", [_anchor, _PersistantRope, _rappelPoint, _rappelDirection, _ropeLength, _unitPreRappelPosition]];					// memory rappel device relevant 'stats'					
+				// diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel) _bottomRopeEndWeight item stats: ", _bottomRopeEndWeight getVariable "AUR_Rappel_Item_Stats"];
 			};
 
 			private _usedRopes =  _unit getVariable ["AUR_Rappelling_Removed_Ropes", []];
-			diag_log formatText ["%1%2%3%4%5%6%7%8", time, "s  (AUR_Rappel) unit ", _unit, ", _usedRopes: ", _usedRopes];
+			// diag_log formatText ["%1%2%3%4%5%6%7%8", time, "s  (AUR_Rappel) unit ", _unit, ", _usedRopes: ", _usedRopes];
 			if (count _usedRopes == 0 ) exitWith {};
 			
 			if (AUR_ADVANCED_RAPPELING_ROPES_HANDLING == 0) then {				// If CBA setting 'Ropes Handling After Rappelling' says 'Always Keep In Inventory', once rappeling unit arrives at the bottom, readd used ropes to units inventory	
@@ -1347,6 +1308,24 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			};
 		};	
 	};
+
+	AUR_Rappellng_Ropes = [				// ropes and their lengths defined as valid rappel ropes [name of rope item, length in m]
+		["AUR_Rappel_Rope_10", 10],
+		["ACE_rope12", 12],
+		["ACE_rope15", 15],
+		["ACE_rope18", 18],
+		["AUR_Rappel_Rope_20", 20],
+		["ACE_rope27", 27],
+		["AUR_Rappel_Rope_30", 30],
+		["ACE_rope36", 36],
+		["AUR_Rappel_Rope_50", 50],
+		["AUR_Rappel_Rope_70", 70]
+	];
+	if (isNil "AUR_ADVANCED_RAPPELING_ITEMS_NEEDED") then {AUR_ADVANCED_RAPPELING_ITEMS_NEEDED = false};		// CBA not installed / used security
+	if (isNil "AUR_ADVANCED_RAPPELING_ROPES_HANDLING") then {AUR_ADVANCED_RAPPELING_ROPES_HANDLING = 0};		// CBA not installed / used security
+	if (isNil "AUR_ADVANCED_RAPPELING_VELOCITY") then {AUR_ADVANCED_RAPPELING_VELOCITY = 1};					// CBA not installed / used security
+	if (isNil "AUR_ADVANCED_RAPPELING_NEW_ACTION") then {AUR_ADVANCED_RAPPELING_NEW_ACTION = false};			// CBA not installed / used security
+	if (isNil "AUR_ADVANCED_RAPPELING_NEW_ACTION_TIME") then {AUR_ADVANCED_RAPPELING_NEW_ACTION_TIME = 3};		// CBA not installed / used security
 
 	diag_log "Advanced Urban Rappelling Loaded";
 };	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
