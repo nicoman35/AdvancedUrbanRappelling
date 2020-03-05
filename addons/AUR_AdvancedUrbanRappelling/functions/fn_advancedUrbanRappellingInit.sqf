@@ -222,7 +222,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 				if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED) then {
 					_ropeLength = [_player, _rappelPoint select 0, _rappelPoint select 1] call AUR_Get_Inventory_Ropelength;		// try to get needed length with ropes from player's inventory 					
 				};
-				diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel_Action) _ropeLength chosen: ", _ropeLength];
+				// diag_log formatText ["%1%2%3%4%5%6%7", time, "s  (AUR_Rappel_Action) _ropeLength chosen: ", _ropeLength];
 				[_player, _rappelPoint select 0, _rappelPoint select 1, _ropeLength] call AUR_Rappel;
 			} else {
 				[[format[localize "STR_COULD_NOT_ATTACH_ROPE"], false], "AUR_Hint", _player] call AUR_RemoteExec;
