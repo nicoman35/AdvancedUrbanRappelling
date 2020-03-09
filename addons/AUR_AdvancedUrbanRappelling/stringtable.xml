@@ -45,14 +45,6 @@
 			<Original>Rappelling velocity in meter/second.</Original>
 			<German>Abseilgeschwindigkeit in Meter/Sekunde.</German>
 		</Key>
-		<!-- <Key ID="STR_AUR_ROPES_SETTING"> -->
-			<!-- <Original>Leave Ropes At Start</Original> -->
-			<!-- <German>Seile Am Start Zurücklassen</German> -->
-		<!-- </Key> -->
-		<!-- <Key ID="STR_AUR_ROPES_SETTING_TIP"> -->
-			<!-- <Original>Used ropes are left back at starting point. Only relevant, if 'Harness And Rappelling Rope Needed' is checked.</Original> -->
-			<!-- <German>Benutzte Seile werden am Startpunkt zurückgelassen. Nur relevant, falls 'Klettergeschirr Und Kletterseil Notwendig' angeklickt ist.</German> -->
-		<!-- </Key> -->
 		<Key ID="STR_AUR_ROPES_HANDLING">
 			<Original>Ropes Handling After Rappelling</Original>
 			<German>Seilhandhabung Nach Dem Abseilen</German>

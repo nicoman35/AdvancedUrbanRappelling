@@ -120,13 +120,12 @@ class Extended_PreInit_EventHandlers {
 		init = "call compile preprocessFileLineNumbers '\AUR_AdvancedUrbanRappelling\scripts\XEH_preInit.sqf'"; // CBA_a3 integration
 	};
 };
-
 class CfgVehicles {
 	class Land_Camping_Light_F;
 	class AUR_RopeSmallWeight : Land_Camping_Light_F {
 		scope		= 2;
 		displayname = "Rope weight";
-		model		= "\AUR_AdvancedUrbanRappelling\weightSmall";
+		model		= "\AUR_AdvancedUrbanRappelling\AUR_weightSmall";
 	};
 };
 
