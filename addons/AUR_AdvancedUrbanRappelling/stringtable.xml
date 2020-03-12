@@ -2,20 +2,32 @@
 <Project name="AUR_ADVANCED_RAPPELING">
     <Package name="AUR_ADVANCED">
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_NAME_V">
-			<Original>Advanced Urban Rappelling v1.0g</Original>
-			<German>Fortgeschrittenes Urbanes Abseilen v1.0g</German>
+			<Original>Advanced Urban Rappelling v1.0h</Original>
+			<German>Fortgeschrittenes Urbanes Abseilen v1.0h</German>
 		</Key>
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_NAME">
 			<Original>Advanced Urban Rappelling</Original>
 			<German>Fortgeschrittenes Urbanes Abseilen</German>
 		</Key>
-		<Key ID="STR_AUR_NEW_BEHAVIOUR">
-			<Original>Harness And Rappelling Rope Needed</Original>
-			<German>Klettergeschirr Und Kletterseil Notwendig</German>
+		<Key ID="STR_AUR_NEEDED_FOR">
+			<Original>Items Needed For Rappelling</Original>
+			<German>Für Das Abseilen Notwendige Utensilien</German>
 		</Key>
-		<Key ID="STR_AUR_NEW_BEHAVIOUR_TIP">
-			<Original>Unchecking will restore original behaviour. Rappelling works without harness and rappelling rope. Benefit: Mod is needed to be installed server side only.</Original>
-			<German>Abwählen stellt Originalverhalten her. Abseilen funkitoniert ohne Klettergeschirr und Kletterseil. Vorteil: Mod muss nur Serverseitig instlliert werden.</German>
+		<Key ID="STR_AUR_NEEDED_FOR_TIP">
+			<Original>Choose which items have to be in inventory for rappelling.</Original>
+			<German>Wähle, welche Gegenstände im Inventar sein müssen, um das Abseilen zu ermöglichen.</German>
+		</Key>
+		<Key ID="STR_AUR_NONE">
+			<Original>None</Original>
+			<German>Keine</German>
+		</Key>
+		<Key ID="STR_AUR_ROPES_ONLY">
+			<Original>Only Rope</Original>
+			<German>Nur Seil</German>
+		</Key>
+		<Key ID="STR_AUR_HARNESS_ROPE">
+			<Original>Harness And Rappelling Rope</Original>
+			<German>Klettergeschirr Und Kletterseil</German>
 		</Key>
 		<Key ID="STR_AUR_NEW_ACTION">
 			<Original>Rope Actions Take Time</Original>
@@ -66,8 +78,8 @@
 			<German>Seile Sind Persistent</German>
 		</Key>
 		<Key ID="STR_AUR_ADVANCED_RAPPELING_OVERVIEW">
-			<Original>Advanced Urban Rappelling v1.0g&lt;br /&gt;Rappel down anything that's more than 4-5m high. This includes buildings, cliffs, towers, etc. Everything works, as long a you can get close enough to an edge.</Original>
-			<German>Fortgeschrittenes Urbanes Abseilen v1.0g&lt;br /&gt;Überall abseilen, wo der Höhenunterschied größer als 4-5m ist. Zum Beispiel Gebäude, Klippen, Türme, etc.. Funktioniert überall, wo genügend nahe an eine Kante gelangt werden kann.</German>
+			<Original>Advanced Urban Rappelling v1.0h&lt;br /&gt;Rappel down anything that's more than 4-5m high. This includes buildings, cliffs, towers, etc. Everything works, as long a you can get close enough to an edge.</Original>
+			<German>Fortgeschrittenes Urbanes Abseilen v1.0h&lt;br /&gt;Überall abseilen, wo der Höhenunterschied größer als 4-5m ist. Zum Beispiel Gebäude, Klippen, Türme, etc.. Funktioniert überall, wo genügend nahe an eine Kante gelangt werden kann.</German>
 		</Key>
 		<Key ID="STR_AUR_RAPPEL_SELF">
 			<Original>Rappel Self</Original>

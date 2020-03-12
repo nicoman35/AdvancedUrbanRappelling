@@ -202,7 +202,8 @@ AUR_Advanced_Urban_Rappelling_Install = {
 
 	AUR_Rappel_Action_Check = {
 		params ["_unit"];
-		if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && (!("AUR_Rappel_Gear" in (items _unit)) || !([_unit] call AUR_Rappel_Rope_Check))) exitWith {false};
+		if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED == 1 && !([_unit] call AUR_Rappel_Rope_Check)) exitWith {false};
+		if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED == 2 && (!("AUR_Rappel_Gear" in (items _unit)) || !([_unit] call AUR_Rappel_Rope_Check))) exitWith {false};
 		if (_unit getVariable ["AUR_Is_Rappelling", false]) exitWith {false};
 		if (vehicle _unit != _unit) exitWith {false};
 		if (([_unit] call AUR_Get_Unit_Height_Above_Ground) < 4) exitWith {false};
@@ -218,7 +219,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			_player setVariable ["AUR_Rappelling_Last_Started_Time", diag_tickTime];
 			_player setVariable ["AUR_Rappelling_Last_Rappel_Point", _rappelPoint];				
 			private _ropeLength = [_player, 100] call AUR_Get_Needed_Ropelength;		// get needed rope legth
-			if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED) then {
+			if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED != 0) then {
 				_ropeLength = [_player, _rappelPoint select 0, _rappelPoint select 1] call AUR_Get_Inventory_Ropelength;		// try to get needed length with ropes from player's inventory 					
 			};
 			[_player, _rappelPoint select 0, _rappelPoint select 1, _ropeLength] call AUR_Rappel;
@@ -315,7 +316,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 	AUR_Rappel_Attach_Action_Check = {
 		params ["_player"];
 		if (_player getVariable ["AUR_Is_Rappelling", false]) exitWith {false};
-		if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && !("AUR_Rappel_Gear" in (items _player))) exitWith {false};
+		if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED == 2 && !("AUR_Rappel_Gear" in (items _player))) exitWith {false};
 		if (vehicle _player != _player) exitWith {false};		
 		_rappelItems = (_player nearObjects 1.5) select {_x getVariable ["AUR_Rappel_Rope_Free", false]};		
 		if (count _rappelItems == 0) exitWith {false};
@@ -451,7 +452,9 @@ AUR_Advanced_Urban_Rappelling_Install = {
 					abs ((_rappelPosition select 2) - ((getPosASL _x) select 2)) < 4 && 
 					not (_x getVariable ["AUR_Is_Rappelling",false]) && 
 					alive _x && vehicle _x == _x &&
-					(!AUR_ADVANCED_RAPPELING_ITEMS_NEEDED || (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && "AUR_Rappel_Gear" in (items _x) && ([_x] call AUR_Rappel_Rope_Check)))) then {
+					(AUR_ADVANCED_RAPPELING_ITEMS_NEEDED == 0 || 
+						(AUR_ADVANCED_RAPPELING_ITEMS_NEEDED == 1 && ([_x] call AUR_Rappel_Rope_Check)) ||
+						(AUR_ADVANCED_RAPPELING_ITEMS_NEEDED == 2 && "AUR_Rappel_Gear" in (items _x) && ([_x] call AUR_Rappel_Rope_Check)))) then {
 					_aiUnitsReady pushBack _x;
 				};
 			} forEach units _player;
@@ -472,7 +475,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			{
 				if (!(_x getVariable ["AUR_Is_Rappelling", false])) then {
 					private _ropeLength = [_x, 100] call AUR_Get_Needed_Ropelength;		// get needed rope legth
-					if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED) then {
+					if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED != 0) then {
 						_ropeLength = [_x, _allRappelPoints select (_index mod 3), _rappelPoint select 1] call AUR_Get_Inventory_Ropelength;	// try to get needed length with ropes from player's inventory 					
 					};
 					[_x, _allRappelPoints select (_index mod 3), _rappelPoint select 1, _ropeLength] spawn AUR_Rappel;
@@ -485,13 +488,28 @@ AUR_Advanced_Urban_Rappelling_Install = {
 
 	AUR_Rappel_AI_Units_Action_Check = {
 		params ["_player"];
-		if (leader _player != _player) exitWith {false};
+		private _future = _player getVariable "AUR_Rappel_AI_mutex";
+		if (time < _future) exitWith {
+			_player getVariable "AUR_Rappel_AI_mutex_last_check";
+		};
+		_player setVariable ["AUR_Rappel_AI_mutex", time + Aur_Ai_Rappel_Check_Interval];
+		if (leader _player != _player) exitWith {
+			_player setVariable ["AUR_Rappel_AI_mutex_last_check", false];
+			false
+		};
 		private _hasAiUnits = false;
 		{
 			if (!isPlayer _x) exitWith {_hasAiUnits = true};
 		} forEach units _player;
-		if (!_hasAiUnits) exitWith {false};
-		if ((count ([_player] call AUR_Get_AI_Units_Ready_To_Rappel)) == 0) exitWith {false};
+		if (!_hasAiUnits) exitWith {
+			_player setVariable ["AUR_Rappel_AI_mutex_last_check", false];
+			false
+		};
+		if ((count ([_player] call AUR_Get_AI_Units_Ready_To_Rappel)) == 0) exitWith {
+			_player setVariable ["AUR_Rappel_AI_mutex_last_check", false];
+			false
+		};
+		_player setVariable ["AUR_Rappel_AI_mutex_last_check", true];
 		true
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -758,7 +776,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			_lastPosition = _newPosition;
 			_topRope = _unit getVariable ["AUR_Rappel_Rope_Top", nil];
 			
-			if (!isNil "_topRope" && AUR_ADVANCED_RAPPELING_ITEMS_NEEDED && (_ropeLength < ((ropeLength _topRope) -5))) then {
+			if (!isNil "_topRope" && AUR_ADVANCED_RAPPELING_ITEMS_NEEDED != 0 && (_ropeLength < ((ropeLength _topRope) -5))) then {
 				_unit setVariable ["AUR_Detach_Rope", true];
 			};
 			
@@ -804,8 +822,8 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			_unit allowDamage false;
 			_unit setPosASL _unitPreRappelPosition;
 		};
-		
-		if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED) then {
+
+		if (AUR_ADVANCED_RAPPELING_ITEMS_NEEDED != 0) then {
 			if (AUR_ADVANCED_RAPPELING_ROPES_HANDLING == 2) exitWith {																				// let's try to leave a persistant rope hanging
 				private _bottomRopeEndWeight = createVehicle ["AUR_RopeSmallWeight", (getPosASL _unit), [], 0, "CAN_COLLIDE"];					// create bottom rope end weight (begin of rope, has to be a TRANSPORT physics object, see https://community.bistudio.com/wiki/ropeCreate/transport)																								// hide object
 				_bottomRopeEndWeight allowDamage false;																							// do not allow damage
@@ -827,12 +845,14 @@ AUR_Advanced_Urban_Rappelling_Install = {
 			if (count _usedRopes == 0 ) exitWith {};
 			
 			if (AUR_ADVANCED_RAPPELING_ROPES_HANDLING == 0) then {				// If CBA setting 'Ropes Handling After Rappelling' says 'Always Keep In Inventory', once rappeling unit arrives at the bottom, readd used ropes to units inventory	
-				[_unit, _usedRopes] call AUR_Inventory_Add_Ropes;	
+				[_unit, _usedRopes] call AUR_Inventory_Add_Ropes;
 			};
 			if (AUR_ADVANCED_RAPPELING_ROPES_HANDLING == 1) then {				// If CBA setting 'Ropes Handling After Rappelling' says 'Leave Ropes At Start', once rappeling unit arrives at the bottom, and pile up those used at upper starting point
 				_topRope = _unit getVariable ["AUR_Rappel_Rope_Top", nil];
 				if (!isNil "_topRope" && !(_unit getVariable ["AUR_Rappel_Attach", false])) then {
-					if (((getPosASL _unit select 2) + 2) < (_unitPreRappelPosition select 2)) then {
+					if (_unit getVariable ["AUR_Climb_To_Top", false]) then {
+						[_unit, _usedRopes] call AUR_Inventory_Add_Ropes;
+					} else {
 						private _ropePile = "groundWeaponHolder" createVehicle _unitPreRappelPosition;
 						_ropePile setPosASL _unitPreRappelPosition;
 						{
@@ -1033,7 +1053,7 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		};
 		
 		_unit switchMove "";	
-		_unit enableSimulation true;	
+		_unit enableSimulation true;
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Hint = {
@@ -1076,7 +1096,10 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		}, nil, 0, false, true, "", "[player] call AUR_Rappel_Detach_Action_Check"];
 		_player addEventHandler ["Respawn", {
 			player setVariable ["AUR_Actions_Loaded", false];
-		}];	
+		}];
+		if (isNil{_player getVariable "AUR_Rappel_AI_mutex"}) then {_player setVariable ["AUR_Rappel_AI_mutex", time + Aur_Ai_Rappel_Check_Interval]};  // help var to have less load while checking for AI units
+		if (isNil{_player getVariable "AUR_Rappel_AI_mutex_last_check"}) then  {_player setVariable ["AUR_Rappel_AI_mutex_last_check", false]};  		// help var to have less load while checking for AI units
+
 	};	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 	AUR_Change_Player_Action = {		// will be executed, if checking / unchecking 'Rope Actions Take Time' in CBA menu
@@ -1250,12 +1273,13 @@ AUR_Advanced_Urban_Rappelling_Install = {
 		["AUR_Rappel_Rope_50", 	50],
 		["AUR_Rappel_Rope_70", 	70]
 	];
-	if (isNil "AUR_ADVANCED_RAPPELING_ITEMS_NEEDED") then {AUR_ADVANCED_RAPPELING_ITEMS_NEEDED 			= false};		// CBA not installed / used security
+	if (isNil "AUR_ADVANCED_RAPPELING_ITEMS_NEEDED") then {AUR_ADVANCED_RAPPELING_ITEMS_NEEDED 			= 0};		// CBA not installed / used security	
 	if (isNil "AUR_ADVANCED_RAPPELING_ROPES_HANDLING") then {AUR_ADVANCED_RAPPELING_ROPES_HANDLING 		= 0};		// CBA not installed / used security
-	if (isNil "AUR_ADVANCED_RAPPELING_VELOCITY") then {AUR_ADVANCED_RAPPELING_VELOCITY 					= 1};					// CBA not installed / used security
-	if (isNil "AUR_ADVANCED_RAPPELING_NEW_ACTION") then {AUR_ADVANCED_RAPPELING_NEW_ACTION 				= false};			// CBA not installed / used security
+	if (isNil "AUR_ADVANCED_RAPPELING_VELOCITY") then {AUR_ADVANCED_RAPPELING_VELOCITY 					= 1};		// CBA not installed / used security
+	if (isNil "AUR_ADVANCED_RAPPELING_NEW_ACTION") then {AUR_ADVANCED_RAPPELING_NEW_ACTION 				= false};	// CBA not installed / used security
 	if (isNil "AUR_ADVANCED_RAPPELING_NEW_ACTION_TIME") then {AUR_ADVANCED_RAPPELING_NEW_ACTION_TIME 	= 3};		// CBA not installed / used security
-
+	Aur_Ai_Rappel_Check_Interval = 2;																				// interval in seconds between AI rappel checks. Performance increasees with higher values, but will cause a 'lag' on appearing / dissapearing player action menu entry.
+	
 	diag_log "Advanced Urban Rappelling Loaded";
 };	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
