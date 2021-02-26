@@ -117,7 +117,12 @@ class CfgWeapons {
 };
 class Extended_PreInit_EventHandlers {
 	class AUR_AdvancedUrbanRappelling {
-		init = "call compile preprocessFileLineNumbers '\AUR_AdvancedUrbanRappelling\scripts\XEH_preInit.sqf'"; // CBA_a3 integration
+		init = "call compile preprocessFileLineNumbers '\AUR_AdvancedUrbanRappelling\scripts\XEH_preInit.sqf'"; // CBA options integration
+	};
+};
+class Extended_PostInit_EventHandlers {
+	class AUR_AdvancedUrbanRappelling 	{
+		init="call compile preprocessFileLineNumbers '\AUR_AdvancedUrbanRappelling\scripts\XEH_postInit.sqf'"; // CBA key binding integration
 	};
 };
 class CfgVehicles {
